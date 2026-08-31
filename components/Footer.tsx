@@ -7,8 +7,8 @@ const Footer = () => {
   return (
     <div className="w-full bg-foreground text-white flex py-20 gap-5">
       <Container className="flex flex-col gap-10">
-        <div className="grid grid-cols-1 gap-5 md:gap-10 grid-cols-5">
-          <div className="flex flex-col gap-3 span-column-2">
+        <div className="grid grid-cols-1 gap-5 md:gap-10 md:grid-cols-5">
+          <div className="flex flex-col gap-3 md:col-span-2">
             <Image
               src={"/images/logo-white.png"}
               alt="White-logo"

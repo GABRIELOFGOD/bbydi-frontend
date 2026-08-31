@@ -5,7 +5,7 @@ import NavItems from "./ui/NavItems";
 
 const Navbar = () => {
   return (
-    <div className="flex py-4 bg-[#F8F8F8] border-b-2 z-50 sticky top-0">
+    <div className="flex py-4 bg-white border-b-2 z-50 sticky top-0">
       <Container>
         <div className="flex w-full justify-between">
           <div>

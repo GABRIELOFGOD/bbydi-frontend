@@ -1,4 +1,4 @@
-import { NewTypes, ProjectCardTypes, PublicationType } from "./types"
+import { MissionVisionType, NewTypes, ProgrammingAreasTypes, ProjectCardTypes, PublicationType } from "./types"
 
 export const NavItemsList = [
   {
@@ -31,7 +31,7 @@ export const NavItemsList = [
   }
 ]
 
-export const ProgrammingAreas = [
+export const ProgrammingAreas: ProgrammingAreasTypes[] = [
   {
     sn: "01",
     title: "Governance & Accountability",
@@ -100,7 +100,7 @@ export const Projects: ProjectCardTypes[] = [
     title: "HerSafeSpace 2.0",
     context: "A 24-month programme on technology-facilitated gender-based violence in Kano and Osun States: a secure mobile app, a web platform for referrals and case management, and an encrypted vault where survivors keep control of their own evidence. Religious and traditional leaders are engaged as allies.",
     desc: "Target: young women and girls aged 15–35",
-    image: "/images/who-we-are.jpg"
+    image: "/images/program/climate.jpg"
   },
   {
     id: "3",
@@ -118,7 +118,7 @@ export const Projects: ProjectCardTypes[] = [
     title: "YouthGovTracka",
     context: "Launched July 2023, platform live November 2023. A central hub for citizens tracking the campaign promises of state governors, backed by 36 trained Youth Focal Points and the Office of the Citizen toolkit in major Nigerian languages.",
     desc: "Reach: all 36 states",
-    image: "/images/who-we-are.jpg"
+    image: "/images/program/climate.jpg"
   },
   {
     id: "5",
@@ -136,7 +136,7 @@ export const Projects: ProjectCardTypes[] = [
     title: "Budget Literacy Workshop",
     context: "Citizens and community advocates trained to read, interrogate and track public budgets — the practical skill that makes accountability advocacy possible.",
     desc: "August 2025 · Kwara State",
-    image: "/images/who-we-are.jpg"
+    image: "/images/program/climate.jpg"
   },
   {
     id: "7",
@@ -154,7 +154,7 @@ export const Projects: ProjectCardTypes[] = [
     title: "Stand Up Against GBV, Kwara",
     context: "A high-level statewide platform moving the state from pledges to delivery — 2025: Commitments. 2026: Community Action. Built on three pillars: accountability, arts-based advocacy and collaboration, with emirs, obas and state actors signing on.",
     desc: "Supported by the Ford Foundation · Statewide, Kwara",
-    image: "/images/who-we-are.jpg"
+    image: "/images/program/climate.jpg"
   },
   {
     id: "9",
@@ -172,7 +172,7 @@ export const Projects: ProjectCardTypes[] = [
     title: "Padded Girls",
     context: "Menstrual health and dignity for schoolgirls, closing the gap that keeps girls out of the classroom for a week every month.",
     desc: "Closed out March 2024",
-    image: "/images/who-we-are.jpg"
+    image: "/images/program/climate.jpg"
   },
   {
     id: "11",
@@ -190,7 +190,7 @@ export const Projects: ProjectCardTypes[] = [
     title: "Reimagining Civic Engagement",
     context: "Original research on technology, artificial intelligence and civic engagement in Africa, launched to national press in Abuja with a companion brief on why AI-supported civic technologies are not yet transforming participation.",
     desc: "May 2026 · Abuja",
-    image: "/images/who-we-are.jpg"
+    image: "/images/program/climate.jpg"
   }
 ];
 
@@ -294,7 +294,61 @@ export const Publications: PublicationType[] = [
     title: "Space for Her Curriculum",
     desc: "Six-week fellowship curriculum · summary edition"
   }
-]
+];
+
+export const MissionVisionApproach: MissionVisionType[] = [
+  {
+    id: "1",
+    track: "Mission",
+    title: "What we are here to do",
+    desc: "To empower young people and local communities to catalyse sustainable development from the grassroots and champion socio-political transformation across Nigeria."
+  },
+  {
+    id: "2",
+    track: "Vision",
+    title: "Where we are going",
+    desc: "A Nigeria where young people and women are not lobbying the decision-makers — they are the decision-makers.",
+    cta: {
+      text: "Draft wording — confirm"
+    }
+  },
+  {
+    id: "3",
+    track: "Approach",
+    title: "How we work",
+    desc: "Non-partisan. Evidence-first. In coalition. We publish our data, name our funders, and measure what we claim."
+  }
+];
+
+export const Policies = [
+  {
+    id: "01",
+    title: "Child Safeguarding Policy",
+    desc: ""
+  },
+  {
+    id: "02",
+    title: "Anti-Fraud & Whistleblowing Policy",
+    desc: ""
+  },
+  {
+    id: "03",
+    title: "PSEAH Policy",
+    desc: ""
+  },
+  {
+    id: "04",
+    title: "Data Protection Policy",
+    desc: ""
+  },
+];
+
+export const AccountabilityData = [
+  { text: "2025", topic: "Annual Report 2025" },
+  { text: "2024", topic: "Annual Report 2024" },
+  { text: "2023", topic: "Annual Report 2023" },
+  { text: "FIN", topic: "Audited Financials" }
+];
 
 // ================== FOOTER =============== //
 
@@ -395,4 +449,4 @@ export const GetInvolved = [
   }
 ];
 
-  // ================== FOOTER =============== //
+// ================== FOOTER =============== //

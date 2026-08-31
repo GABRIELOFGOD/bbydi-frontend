@@ -27,7 +27,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", dmSans.variable, "font-sans")}
+      className={cn("h-full", "antialiased", dmSans.variable, "font-sans tracking-wide")}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

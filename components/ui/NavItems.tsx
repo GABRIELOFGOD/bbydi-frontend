@@ -14,7 +14,7 @@ const NavItems = () => {
         <Link
           key={index}
           href={item.path}
-          className={cn("capitalize text-xs text-card-foreground font-medium hover:text-primary", {
+          className={cn("capitalize text-xs tracking-wider text-card-foreground font-medium hover:text-primary", {
             "text-primary font-bold": path === item.path
           })}
         >

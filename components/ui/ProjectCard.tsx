@@ -21,7 +21,7 @@ const ProjectCard = ({ category, context, desc, id, image, status, title, classN
         />
       </div>
       <div className="p-5 flex flex-col gap-2">
-        <p className="w-full bg-primary/15 text-primary text-xs px-2 py-1 font-semibold rounded uppercase">
+        <p className="w-full bg-primary/15 text-primary text-xs px-4 py-1 font-semibold rounded uppercase">
           <span>{category}</span> . <span>{status}</span>
         </p>
         <h3 className="text-lg font-bold">{title}</h3>

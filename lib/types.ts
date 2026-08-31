@@ -20,5 +20,24 @@ export interface PublicationType {
   id: string;
   title: string;
   desc: string;
+  text?: string;
 }
 
+export interface MissionVisionType {
+  id: string;
+  track: string;
+  title: string;
+  desc: string;
+  cta?: {
+    text: string;
+    link?: string;
+  }
+}
+
+export interface ProgrammingAreasTypes {
+ sn: string;
+ title: string;
+ description: string;
+ project: string;
+ image: string;
+}
