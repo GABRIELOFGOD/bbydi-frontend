@@ -41,3 +41,15 @@ export interface ProgrammingAreasTypes {
  project: string;
  image: string;
 }
+
+export interface OpportunityTypes {
+  id: string;
+  title: string;
+  desc?: string;
+  status: string;
+  image?: string;
+  link: string;
+  location?: string;
+  type?: string;
+  deadline?: string;
+}

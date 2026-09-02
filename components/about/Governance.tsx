@@ -3,6 +3,7 @@ import Container from "../Container";
 import ColumnTitle from "../ui/ColumnTitle";
 import SectionTitle from "../ui/SectionTitle";
 import PublicationCard from "../ui/PublicationCard";
+import GovernanceAccordion from "./GovernanceAccordion";
 
 const Governance = () => {
   return (
@@ -12,7 +13,7 @@ const Governance = () => {
         <ColumnTitle text="How BBYDI is governed" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div></div>
+          <GovernanceAccordion />
           <div className="flex flex-col gap-3">
             <h2 className="text-gray-500 uppercase text-xs font-semibold">Policies & safeguards</h2>
             <div className="flex flex-col gap-3">

@@ -1,4 +1,4 @@
-import { MissionVisionType, NewTypes, ProgrammingAreasTypes, ProjectCardTypes, PublicationType } from "./types"
+import { MissionVisionType, NewTypes, OpportunityTypes, ProgrammingAreasTypes, ProjectCardTypes, PublicationType } from "./types"
 
 export const NavItemsList = [
   {
@@ -348,6 +348,148 @@ export const AccountabilityData = [
   { text: "2024", topic: "Annual Report 2024" },
   { text: "2023", topic: "Annual Report 2023" },
   { text: "FIN", topic: "Audited Financials" }
+];
+
+export const OurExpertiseData = [
+  {
+    id: "01",
+    title: "Research & evidence generation",
+    desc: "Data-driven, evidence-based analysis of government accountability and transparency, from needs assessments to policy briefs."
+  },
+  {
+    id: "02",
+    title: "Curriculum design & training",
+    desc: "Multi-week curricula delivered to cohorts of women in politics, youth focal points, teachers and community advocates."
+  },
+  {
+    id: "03",
+    title: "Civic technology",
+    desc: "Public-facing platforms and toolkits — accountability trackers, chatbots, translated citizen toolkits, secure survivor infrastructure."
+  },
+  {
+    id: "04",
+    title: "Community mobilisation",
+    desc: "Grassroots dialogue with traditional rulers, religious leaders, market associations and community groups across Nigeria."
+  },
+  {
+    id: "05",
+    title: "Coalition building & convening",
+    desc: "Bringing civil society, media, government and traditional institutions into shared advocacy platforms."
+  },
+  {
+    id: "06",
+    title: "Campaigns & public engagement",
+    desc: "Radio, local-language translation, grassroots outreach and social campaigns that reach beyond the capital."
+  },
+];
+
+export const TopOpportunities: OpportunityTypes[] = [
+  {
+    id: "1",
+    title: "Space for Her — next cohort",
+    desc: "Six-week political leadership fellowship for women with electoral ambitions. Approximately 20 places.",
+    status: "open",
+    link: "#",
+    location: "Kwara State",
+    type: "fellowship"
+  },
+  {
+    id: "2",
+    title: "National Essay Competition",
+    desc: "Run with the Patrick J. McGovern Foundation and taken through to a national grand finale. Open to Nigerian students and young writers.",
+    status: "open",
+    image: "/images/opportunity.jpg",
+    link: "#",
+  },
+  {
+    id: "3",
+    title: "Youth Focal Point Programme",
+    desc: "One focal point per state, trained through a six-week curriculum in advocacy, data analysis and civic engagement.",
+    status: "closed",
+    link: "#",
+    location: "All 36 states",
+    type: "programme"
+  }
+];
+
+export const OtherOpportunities: OpportunityTypes[] = [
+  {
+    id: "4",
+    title: "Volunteer with BBYDI",
+    status: "open",
+    type: "fellowship",
+    location: "NationWide",
+    link: "#",
+    deadline: "To confirm"
+  },
+  {
+    id: "5",
+    title: "BBYDI Essay Competition",
+    link: "#",
+    status: "open",
+    location: "Nigeria",
+    deadline: "To confirm",
+    type: "competition"
+  },
+  {
+    id: "6",
+    title: "Digital Safety Advocates (HerSafeSpace 2.0)",
+    type: "training",
+    location: "Kano & Osun States",
+    link: "#",
+    status: "open",
+    deadline: "To confirm"
+  },
+  {
+    id: "7",
+    title: "Programme Officer — Governance",
+    type: "vacancy",
+    location: "Ilorin, Kwara State",
+    link: "#",
+    status: "open",
+    deadline: "To confirm"
+  },
+  {
+    id: "8",
+    title: "Volunteer / Campus Ambassador",
+    type: "volunteering",
+    location: "Nationwide",
+    deadline: "rolling",
+    status: "open",
+    link: "#"
+  },
+  {
+    id: "9",
+    title: "Youth Focal Point Programme",
+    type: "fellowship",
+    location: "36 states",
+    link: "#",
+    deadline: "Closed",
+    status: "closed"
+  }
+];
+
+export const Governed = [
+  {
+    id: "1",
+    topic: "Board of Trustees",
+    content: "The Board of Trustees is the highest decision-making body of BBYDI, providing strategic direction and oversight. It is composed of distinguished individuals with expertise in governance, development, and youth engagement.",
+  },
+  {
+    id: "2",
+    topic: "Management team",
+    content: "The Management Team is responsible for the day-to-day operations of BBYDI, implementing the strategic plans set by the Board of Trustees. It consists of experienced professionals in various fields, including program management, finance, and communications.",
+  },
+  {
+    id: "3",
+    topic: "Registration & legal status",
+    content: "BBYDI is registered as a non-profit organization under the laws of Nigeria. It operates in compliance with all relevant regulations and maintains transparency and accountability in its operations.",
+  },
+  {
+    id: "4",
+    topic: "Where we work",
+    content: "BBYDI operates across Nigeria, with a focus on engaging youth and local communities in various states. Our programs are designed to address the unique challenges and opportunities in each region, ensuring that our impact is both meaningful and sustainable.",
+  }
 ];
 
 // ================== FOOTER =============== //

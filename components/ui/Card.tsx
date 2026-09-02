@@ -15,7 +15,7 @@ const Card = ({ numberOfCards, title, description, cta, className } : {
   return (
     <div className={cn("bg-white p-6 border w-full", className)}>
       {numberOfCards && (
-        <div className="text-xs font-bold text-primary">{numberOfCards}</div>
+        <div className="text-xs font-semibold text-primary">{numberOfCards}</div>
       )}
       {title && (
         <h3 className="text-lg font-bold mt-2">{title}</h3>
