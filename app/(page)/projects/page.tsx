@@ -1,6 +1,7 @@
 import ProjectsContainer from "@/components/project/ProjectsContainer";
 import PageHeader from "@/components/ui/PageHeader";
 import { Metadata } from "next";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -16,7 +17,9 @@ const ProjectsPage = () => {
         description="A browsable record of what BBYDI is delivering, where, with whom, and what it has changed."
       />
 
-      <ProjectsContainer />
+      <Suspense fallback={null}>
+        <ProjectsContainer />
+      </Suspense>
     </div>
   )
 }
