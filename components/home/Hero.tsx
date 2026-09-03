@@ -13,7 +13,7 @@ const Hero = () => {
         layout="fill"
         objectFit="cover"
         quality={100}
-        className="h-full object-cover"
+        className="h-fit object-cover"
       />
       <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/70 to-black/50 bg-opacity-50 items-center justify-center flex w-full py-10 h-fit">
         <Container className="flex flex-col gap-10 md:gap-15">
@@ -27,7 +27,7 @@ const Hero = () => {
               Building the civic power of Nigeria's <span className="text-secondary">young people</span>.
             </h1>
 
-            <p className="md:text-[21px] text-lg text-muted/80">BBYDI is a non-partisan, not-for-profit organisation advancing inclusive governance, youth empowerment and gender equality — with evidence, at scale, from the grassroots up.</p>
+            <p className="md:text-[21px] text-base text-muted/80">BBYDI is a non-partisan, not-for-profit organisation advancing inclusive governance, youth empowerment and gender equality — with evidence, at scale, from the grassroots up.</p>
 
             <div className="flex gap-5 flex-col md:flex-row">
               <Button className={cn("text-primary w-fit hover:bg-white bg-white border-2 border-white rounded p-6 font-bold")}>Explore our work</Button>
