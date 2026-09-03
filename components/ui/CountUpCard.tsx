@@ -8,7 +8,7 @@ const CountUpCard = ({ value, text, suffix, format = true }: { value: number, te
 
   return (
     <div className="flex flex-col gap-3">
-      <h3 className="text-4xl font-extrabold">{formattedNumber}{suffix}</h3>
+      <h3 className="md:text-4xl text-2xl font-extrabold">{formattedNumber}{suffix}</h3>
       <p className="text-muted/60 text-sm">{text}</p>
     </div>
   )

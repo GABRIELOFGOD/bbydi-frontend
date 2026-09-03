@@ -9,7 +9,7 @@ import Partners from "../../components/home/Partners";
 
 export default function Home() {
   return (
-    <div>
+    <div className="flex flex-col">
       <Hero />
       <WhoWeAre />
       <Program />
