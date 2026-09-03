@@ -38,7 +38,7 @@ const Navbar = () => {
         </div>
 
         <Drawer swipeDirection="right">
-          <DrawerTrigger render={<Button variant="outline" />}>
+          <DrawerTrigger className="flex md:hidden" render={<Button variant="outline" />}>
             <MenuIcon />
           </DrawerTrigger>
           <DrawerContent>
