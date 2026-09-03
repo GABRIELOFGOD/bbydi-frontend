@@ -27,7 +27,7 @@ const OurTeam = () => {
         </div>
         <div className="flex flex-col gap-3 mt-5">
           <h2 className="text-gray-500 uppercase text-[10px] tracking-wider font-semibold">Programmes, research & operations</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-5">
             {StaffTeamData.map((team) => (
               <StaffTeamCard
                 key={team.id}
