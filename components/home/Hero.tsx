@@ -14,7 +14,7 @@ const Hero = () => {
         objectFit="cover"
         quality={100}
       />
-      <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/70 to-black/50 bg-opacity-50 items-center justify-center flex w-full md:py-20 py-10">
+      <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/70 to-black/50 bg-opacity-50 items-center justify-center flex w-full py-20">
         <Container className="flex flex-col gap-15">
           <div className="text-white w-full md:max-w-[70%] flex flex-col gap-8">
             <div className="border-secondary border-2 rounded-full bg-primary/30 w-fit">
@@ -34,7 +34,7 @@ const Hero = () => {
             </div>
           </div>
           <div className="w-full border-b border-gray-600" />
-          <div className="grid grid-cols-1 md:grid-cols-4 md:gap-20 gap-5 text-white">
+          <div className="grid grid-cols-2 md:grid-cols-4 md:gap-20 gap-5 text-white">
             <CountUpCard value={2014} text="Founded as a student initiative at the University of Ilorin" format={false} />
             <CountUpCard value={100000} text="Young people trained in digital and leadership skills" suffix="+" />
             <CountUpCard value={36} text="States with trained youth governance focal points" />

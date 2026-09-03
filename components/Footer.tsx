@@ -7,7 +7,7 @@ const Footer = () => {
   return (
     <div className="w-full bg-foreground text-white flex py-20 gap-5">
       <Container className="flex flex-col gap-10">
-        <div className="grid grid-cols-1 gap-5 md:gap-10 md:grid-cols-5">
+        <div className="grid grid-cols-2 gap-5 md:gap-10 md:grid-cols-5">
           <div className="flex flex-col gap-5 md:col-span-2">
             <Image
               src={"/images/logo-white.png"}
@@ -69,7 +69,7 @@ const Footer = () => {
 
         <div className="w-full bg-muted-foreground h-[0.5px]" />
 
-        <div className="flex justify-between gap-5 text-sm text-muted-foreground">
+        <div className="flex flex-col md:flex-row justify-between gap-5 text-sm text-muted-foreground">
           <div className="flex gap-2">
             <span>&copy;</span>
             <p>2026 Brain Builders Youth Development Initiative.</p>

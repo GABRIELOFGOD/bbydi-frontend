@@ -124,7 +124,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground relative;
     font-family: var(--sans);
   }
   button:not(:disabled), [role="button"]:not(:disabled) {
@@ -135,6 +135,6 @@
     font-family: var(--sans);
   }
   h1, h2, h3, h4, h5, h6, p, span, button {
-    @apply tracking-wide
+    @apply tracking-normal
   }
 }

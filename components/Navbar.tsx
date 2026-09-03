@@ -2,6 +2,18 @@ import Image from "next/image";
 import Container from "./Container";
 import { Button } from "./ui/button";
 import NavItems from "./ui/NavItems";
+import Link from "next/link";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { MenuIcon } from "lucide-react";
 
 const Navbar = () => {
   return (
@@ -18,11 +30,34 @@ const Navbar = () => {
             />
           </div>
 
-          <NavItems />
+          <div className="my-auto hidden md:flex">
+            <NavItems />
+          </div>
 
-          <Button className="my-auto rounded p-5 text-xs font-semibold">Partner With Us</Button>
+          <Link href={"/partner-with-us"}><Button className="my-auto rounded md:flex hidden p-5 text-xs font-semibold">Partner With Us</Button></Link>
         </div>
+
+        <Drawer swipeDirection="right">
+          <DrawerTrigger render={<Button variant="outline" />}>
+            <MenuIcon />
+          </DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+              <DrawerDescription>This action cannot be undone.</DrawerDescription>
+            </DrawerHeader>
+            <div className="p-4">
+              <NavItems />
+              <Link href={"/partner-with-us"}><Button className="my-auto w-full rounded md:flex hidden p-5 text-xs font-semibold">Partner With Us</Button></Link>
+            </div>
+            <DrawerFooter>
+              <Button>Submit</Button>
+              <DrawerClose render={<Button variant="outline" />}>Cancel</DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
       </Container>
+      
     </div>
   )
 }

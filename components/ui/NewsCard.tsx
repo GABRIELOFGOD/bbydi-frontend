@@ -16,7 +16,7 @@ const NewsCard = ({ content, date, id, title, publisher }: NewTypes) => {
   }
 
   return (
-    <div className="w-full py-5 border-b cursor-pointer border-muted flex gap-5 md:gap-10 text-foreground hover:text-primary">
+    <div className="w-full py-5 border-b cursor-pointer border-muted flex flex-col md:flex-row gap-5 md:gap-10 text-foreground hover:text-primary">
       <p className="text-muted-foreground text-xs pt-2 font-semibold">{new Date(date).toLocaleDateString()}</p>
       <div className="flex flex-col gap-2">
         <h3 className="text-lg font-bold">{title}</h3>
