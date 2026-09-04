@@ -1,3 +1,5 @@
+import { Icon } from "lucide-react";
+
 export interface ProjectCardTypes {
   id: string;
   category: string;
@@ -52,4 +54,12 @@ export interface OpportunityTypes {
   location?: string;
   type?: string;
   deadline?: string;
+}
+
+export interface CardTypes {
+  id: number;
+  title: string;
+  text: string;
+  value: number;
+  icon?: string | typeof Icon;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import Input from "./Input";
+import Input from "./input";
 import { Button } from "./button";
 
 const ContactForm = () => {
