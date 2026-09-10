@@ -1,5 +1,7 @@
 import { MissionVisionType, NewTypes, OpportunityTypes, ProgrammingAreasTypes, ProjectCardTypes, PublicationType } from "./types"
 
+export const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, "");
+
 export const NavItemsList = [
   {
     label: "Home",

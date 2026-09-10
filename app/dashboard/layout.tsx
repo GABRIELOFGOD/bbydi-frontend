@@ -1,21 +1,14 @@
+import DashboardGuard from "@/components/dashboard/DashboardGuard";
+import { UserProvider } from "@/providers/userProvider";
 import { ReactNode } from "react";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
-import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
-const DashboardLayout = ({ children }:{ children: ReactNode }) => {
+const DashboardLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <main className="w-full">
-        <div className="flex flex-col w-full">
-          <DashboardHeader />
-          <div className="p-4">
-            {children}
-          </div>
-        </div>
-      </main>
-    </SidebarProvider>
+    <UserProvider>
+      <DashboardGuard>
+        {children}
+      </DashboardGuard>
+    </UserProvider>
   )
 }
 

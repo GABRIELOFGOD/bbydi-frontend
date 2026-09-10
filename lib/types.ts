@@ -1,5 +1,10 @@
 import { Icon } from "lucide-react";
 
+export enum UserRole {
+  ADMIN = "admin",
+  STAFF = "staff"
+}
+
 export interface ProjectCardTypes {
   id: string;
   category: string;
@@ -62,4 +67,12 @@ export interface CardTypes {
   text: string;
   value: number;
   icon?: string | typeof Icon;
+}
+
+export interface User {
+  name: string;
+  avatar: string;
+  email: string;
+  role: UserRole;
+  position: string;
 }
