@@ -14,3 +14,7 @@ export const slugify = (text: string) => {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
 }
+
+export const throwError = (error: unknown, errorMessage?: string) => {
+  return error instanceof Error ? error.message : errorMessage
+}

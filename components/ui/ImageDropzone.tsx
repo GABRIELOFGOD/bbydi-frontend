@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone, type FileRejection } from "react-dropzone";
 import { ImagePlus, X } from "lucide-react";
@@ -22,7 +23,7 @@ export function ImageDropzone({ onFileChange, className }: ImageDropzoneProps) {
       if (!file) {
         setError(
           fileRejections[0]?.errors[0]?.message ??
-            "Please choose a valid image file.",
+          "Please choose a valid image file.",
         );
         return;
       }
@@ -73,9 +74,12 @@ export function ImageDropzone({ onFileChange, className }: ImageDropzoneProps) {
         <input {...getInputProps()} />
         {previewUrl ? (
           <>
-            <img
+            <Image
               src={previewUrl}
               alt="Selected program"
+              width={640}
+              height={320}
+              unoptimized
               className="h-56 w-full object-cover"
             />
             <button

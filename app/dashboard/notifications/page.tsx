@@ -1,7 +1,5 @@
-const DashboardNotificationsPage = () => {
-  return (
-    <div>DashboardNotificationsPage</div>
-  )
-}
+import NotificationsInbox from "@/components/dashboard/NotificationsInbox";
 
-export default DashboardNotificationsPage;
+export default function DashboardNotificationsPage() {
+  return <NotificationsInbox />;
+}

@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
-const OpportunityCard = ({ image, status, title, desc }: OpportunityTypes) => {
+const OpportunityCard = ({ image, status, title, desc, link }: OpportunityTypes) => {
   return (
     <div className={cn("border relative w-full h-full border-t-3 hover:border-primary flex flex-col", status === "open" ? "border-t-primary" : "border-t-gray-400")}>
       {image && (
@@ -27,7 +27,7 @@ const OpportunityCard = ({ image, status, title, desc }: OpportunityTypes) => {
         )}
 
         {status === "open" ? (
-          <Link href="#" className="text-primary font-semibold text-sm">Apply →</Link>
+          <Link href={link || "#"} className="text-primary font-semibold text-sm">Apply →</Link>
         ) : (
           <p className="text-gray-500 font-semibold text-sm">Archived</p>
         )}

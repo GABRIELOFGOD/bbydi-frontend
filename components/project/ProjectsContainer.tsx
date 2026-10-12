@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import Container from '../Container';
-import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Projects } from '@/lib/constants';
 import ProjectCard from '../ui/ProjectCard';
 import { ProjectCardTypes } from '@/lib/types';
+import { usePublicContent } from '@/lib/usePublicContent';
+import { ContentItem } from '@/lib/content';
 
 const ProjectCategories = [
   {
@@ -42,20 +43,23 @@ const ProjectCategories = [
   }
 ]
 
+const mapProject = (item: ContentItem): ProjectCardTypes => ({
+  id: item._id,
+  category: item.category ?? "",
+  status: item.status ?? "",
+  title: item.title,
+  context: item.context ?? item.description ?? "",
+  desc: item.summary ?? "",
+  image: item.image || "/images/who-we-are.jpg",
+});
+
 const ProjectsContainer = () => {
-  const [activeCategory, setActiveCategory] = useState("");
-  const [mappableProjects, setMappableProjects] = useState<ProjectCardTypes[]>(Projects);
-
+  const { items: projects } = usePublicContent("project", Projects, mapProject);
   const params = useSearchParams().get("category");
-
-  useEffect(() => {
-    setActiveCategory(params || "");
-    if (activeCategory === "" || null) {
-      setMappableProjects(Projects);
-    } else {
-      setMappableProjects(Projects.filter(proj => proj.category === params));
-    }
-  }, [params])
+  const activeCategory = params ?? "";
+  const mappableProjects = activeCategory
+    ? projects.filter((project) => project.category === activeCategory)
+    : projects;
   
   return (
     <Container className="py-20 flex flex-col gap-10">

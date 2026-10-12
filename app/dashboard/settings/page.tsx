@@ -1,7 +1,5 @@
-const DashboardSettingsPage = () => {
-  return (
-    <div>DashboardSettingsPage</div>
-  )
-}
+import AccountSettings from "@/components/dashboard/AccountSettings";
 
-export default DashboardSettingsPage;
+export default function DashboardSettingsPage() {
+  return <AccountSettings />;
+}

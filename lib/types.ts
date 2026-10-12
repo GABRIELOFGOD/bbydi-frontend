@@ -5,6 +5,15 @@ export enum UserRole {
   STAFF = "staff"
 }
 
+export type ContentKind =
+  | "program"
+  | "project"
+  | "news"
+  | "opportunity"
+  | "report"
+  | "publication"
+  | "partner";
+
 export interface ProjectCardTypes {
   id: string;
   category: string;
@@ -28,6 +37,7 @@ export interface PublicationType {
   title: string;
   desc: string;
   text?: string;
+  fileUrl?: string;
 }
 
 export interface MissionVisionType {
@@ -70,6 +80,7 @@ export interface CardTypes {
 }
 
 export interface User {
+  _id?: string;
   name: string;
   avatar: string;
   email: string;

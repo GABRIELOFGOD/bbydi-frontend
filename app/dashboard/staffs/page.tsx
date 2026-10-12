@@ -1,9 +1,5 @@
-const DashboardStaffPage = () => {
-  return (
-    <div>
-      <h1>BBYDI Doers</h1>
-    </div>
-  )
-}
+import StaffManagement from "@/components/dashboard/StaffManagement";
 
-export default DashboardStaffPage;
+export default function DashboardStaffPage() {
+  return <StaffManagement />;
+}

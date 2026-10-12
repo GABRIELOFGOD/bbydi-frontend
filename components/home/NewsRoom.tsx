@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import Container from "../Container";
 import { Button } from "../ui/button";
@@ -6,8 +8,20 @@ import SectionTitle from "../ui/SectionTitle";
 import { News } from "@/lib/constants";
 import NewsCard from "../ui/NewsCard";
 import Link from "next/link";
+import { usePublicContent } from "@/lib/usePublicContent";
+import { ContentItem } from "@/lib/content";
+
+const mapNews = (item: ContentItem): NewTypes => ({
+  id: item._id,
+  date: item.date ?? "",
+  title: item.title,
+  content: item.description ?? "",
+  publisher: item.publisher,
+});
 
 const NewsRoom = () => {
+  const { items: news } = usePublicContent("news", News, mapNews);
+
   return (
     <Container className="flex flex-col gap-5 py-20">
       <SectionTitle title="NewsRoom" />
@@ -16,9 +30,9 @@ const NewsRoom = () => {
         <Button className={cn("w-fit my-auto mt-5 p-6 rounded bg-transparent hover:bg-primary/10 border-2 border-primary text-primary font-bold")}>All news</Button>
       </div>
       <div className="flex flex-col gap-2">
-        {News.map((news) => (
-          <Link key={news.id} href="/media" className="w-full">
-            <NewsCard {...news} />
+        {news.map((entry) => (
+          <Link key={entry.id} href="/media" className="w-full">
+            <NewsCard {...entry} />
           </Link>
         ))}
       </div>

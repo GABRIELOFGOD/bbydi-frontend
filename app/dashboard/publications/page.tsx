@@ -1,7 +1,5 @@
-const DashboardPublicationsPage = () => {
-  return (
-    <div>DashboardPublicationsPage</div>
-  )
-}
+import ContentManager from "@/components/dashboard/ContentManager";
 
-export default DashboardPublicationsPage;
+export default function DashboardPublicationsPage() {
+  return <ContentManager kind="publication" title="Publications" />;
+}

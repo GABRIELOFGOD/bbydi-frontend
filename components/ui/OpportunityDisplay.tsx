@@ -1,3 +1,5 @@
+"use client";
+
 import { OtherOpportunities, TopOpportunities } from "@/lib/constants";
 import OpportunityCard from "./OpportunityCard";
 import Container from "../Container";
@@ -11,12 +13,32 @@ import {
 } from "@/components/ui/table";
 import ColumnTitle from "./ColumnTitle";
 import { cn } from "@/lib/utils";
+import { usePublicContent } from "@/lib/usePublicContent";
+import { ContentItem } from "@/lib/content";
+import { OpportunityTypes } from "@/lib/types";
+
+const initialOpportunities = [...TopOpportunities, ...OtherOpportunities];
+const mapOpportunity = (item: ContentItem): OpportunityTypes => ({
+  id: item._id,
+  title: item.title,
+  desc: item.description,
+  status: item.status ?? "closed",
+  image: item.image,
+  link: item.link ?? "#",
+  location: item.location,
+  type: item.type,
+  deadline: item.deadline,
+});
 
 const OpportunityDisplay = () => {
+  const { items: opportunities } = usePublicContent("opportunity", initialOpportunities, mapOpportunity);
+  const topOpportunities = opportunities.slice(0, 3);
+  const otherOpportunities = opportunities.slice(3);
+
   return (
     <Container className="flex flex-col gap-5 py-20">
       <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-        {TopOpportunities.map((top) => (
+        {topOpportunities.map((top) => (
           <OpportunityCard
             key={top.id}
             // image={top.image}
@@ -43,7 +65,7 @@ const OpportunityDisplay = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {OtherOpportunities.map((invoice) => (
+            {otherOpportunities.map((invoice) => (
               <TableRow className="mt-10" key={invoice.id}>
                 <TableCell className="font-bold pb-10">{invoice.title}</TableCell>
                 <TableCell className="capitalize">{invoice.type}</TableCell>

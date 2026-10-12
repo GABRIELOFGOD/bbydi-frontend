@@ -1,7 +1,5 @@
-const DashboardContactPage = () => {
-  return (
-    <div>DashboardContactPage</div>
-  )
-}
+import ContactInbox from "@/components/dashboard/ContactInbox";
 
-export default DashboardContactPage;
+export default function DashboardContactPage() {
+  return <ContactInbox />;
+}

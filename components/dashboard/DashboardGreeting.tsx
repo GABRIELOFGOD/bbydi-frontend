@@ -1,9 +1,11 @@
 "use client";
 
-import { useCurrentUser } from "@/hooks/getCurrentUser";
+"use client";
+
+import { useUser } from "@/providers/userProvider";
 
 const DashboardGreeting = () => {
-  const currentUser = useCurrentUser()
+  const { user } = useUser();
   const timeOfTheDay = () => {
     const currentHour = new Date().getHours();
     if (currentHour < 12) {
@@ -16,7 +18,7 @@ const DashboardGreeting = () => {
   };
   return (
     <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-      {timeOfTheDay()}, {currentUser.name}!
+      {timeOfTheDay()}, {user?.name || "there"}!
     </div>
   )
 }

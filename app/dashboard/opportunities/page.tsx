@@ -1,7 +1,5 @@
-const DashboardOpportunities = () => {
-  return (
-    <div>DashboardOpportunities</div>
-  )
-}
+import ContentManager from "@/components/dashboard/ContentManager";
 
-export default DashboardOpportunities;
+export default function DashboardOpportunitiesPage() {
+  return <ContentManager kind="opportunity" title="Opportunities" />;
+}

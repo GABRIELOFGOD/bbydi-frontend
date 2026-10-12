@@ -8,15 +8,15 @@ interface privateProjectCardType extends ProjectCardTypes {
   className?: string
 }
 
-const ProjectCard = ({ category, context, desc, id, image, status, title, className }: privateProjectCardType) => {
+const ProjectCard = ({ category, context, desc, image, status, title, className }: privateProjectCardType) => {
   return (
     <div className={cn("w-full border rounded relative h-full", className)}>
       <div className="relative h-50 w-full">
         <Image
           src={image}
           alt={`Project image - ${title}`}
-          layout="fill"
-          objectFit="cover"
+          fill
+          className="object-cover"
           quality={100}
         />
       </div>
@@ -29,9 +29,9 @@ const ProjectCard = ({ category, context, desc, id, image, status, title, classN
         <div className="h-px w-full bg-gray-200 my-5" />
         <div className="bottom-0 flex flex-col my-auto">
           <p className="text-sm text-primary font-bold">{desc}</p>
-          <Link href={`/projects/${id}`}>
+          <Link href={`/projects?category=${encodeURIComponent(category)}`}>
             <Button className="w-full my-auto mt-5 p-5 rounded bg-transparent hover:bg-primary/10 border-2 border-primary text-primary font-bold">
-              Open project page →
+              See projects in this area →
             </Button>
           </Link>
         </div>

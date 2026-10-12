@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Container from "../Container";
 import { Button } from "../ui/button";
@@ -6,8 +8,21 @@ import SectionTitle from "../ui/SectionTitle";
 import { Projects } from "@/lib/constants";
 import ProjectCard from "../ui/ProjectCard";
 import { ProjectCardTypes } from "@/lib/types";
+import { usePublicContent } from "@/lib/usePublicContent";
+import { ContentItem } from "@/lib/content";
+
+const mapProject = (item: ContentItem): ProjectCardTypes => ({
+  id: item._id,
+  category: item.category ?? "",
+  status: item.status ?? "",
+  title: item.title,
+  context: item.context ?? item.description ?? "",
+  desc: item.summary ?? "",
+  image: item.image || "/images/who-we-are.jpg",
+});
 
 const CurrentProjects = () => {
+  const { items: projects } = usePublicContent("project", Projects, mapProject);
   return (
     <Container className="flex flex-col gap-5 py-20">
       <SectionTitle title="Current projects" />
@@ -21,7 +36,7 @@ const CurrentProjects = () => {
       </div>
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-        {Projects.slice(0, 3).map((project: ProjectCardTypes) => (
+        {projects.slice(0, 3).map((project: ProjectCardTypes) => (
           <ProjectCard
             category={project.category}
             context={project.context}
