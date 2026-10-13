@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 import { toast } from "sonner";
 import { apiRequest } from "@/lib/api";
-import { Input } from "./input";
+import { Input } from "./Input";
 import { Button } from "./button";
 
 const emptyForm = {
