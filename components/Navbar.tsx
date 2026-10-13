@@ -16,7 +16,7 @@ const Navbar = () => {
     <div className="flex py-4 bg-white border-b-2 z-50 sticky top-0">
       <Container>
         <div className="flex w-full justify-between">
-          <div>
+          <Link href={"/"}>
             <Image
               src={"/images/logo.png"}
               alt="Logo"
@@ -24,7 +24,7 @@ const Navbar = () => {
               height={50}
               width={140}
             />
-          </div>
+          </Link>
 
           <div className="my-auto hidden md:flex">
             <NavItems />
