@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "sonner";
+import AccessibilityWidget from "@/components/accessibility/AccessibilityWidget";
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" });
 
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <TooltipProvider>
           <Toaster />
           {children}
+          <AccessibilityWidget />
         </TooltipProvider>
       </body>
     </html>

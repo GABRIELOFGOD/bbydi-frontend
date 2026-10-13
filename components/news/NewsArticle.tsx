@@ -11,17 +11,39 @@ import { createNewsSlug } from "@/lib/news";
 import SafeHtml from "@/components/news/SafeHtml";
 import NewsShareButtons from "@/components/news/NewsShareButtons";
 
+const narrationVoices = [
+  { id: "ng-female", label: "Nigerian English — Female", language: "en-NG", gender: "female" },
+  { id: "ng-male", label: "Nigerian English — Male", language: "en-NG", gender: "male" },
+  { id: "us-female", label: "US English — Female", language: "en-US", gender: "female" },
+  { id: "us-male", label: "US English — Male", language: "en-US", gender: "male" },
+] as const;
+
+const genderHints: Record<(typeof narrationVoices)[number]["gender"], RegExp> = {
+  female: /female|woman|girl|samantha|victoria|karen|zira|aria|jenny|ava|susan|moira|tessa|serena|allison|joanna|kathy/i,
+  male: /male|man|boy|daniel|david|alex|tom|mark|guy|fred|jorge|aaron|bruce|oliver|lee|george/i,
+};
+
 function ArticleAudioPlayer({ title, html }: { title: string; html: string }) {
   const [supported, setSupported] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [rate, setRate] = useState(1);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [voiceId, setVoiceId] = useState<(typeof narrationVoices)[number]["id"]>("ng-female");
   const utterance = useRef<SpeechSynthesisUtterance | null>(null);
 
   useEffect(() => {
-    const frame = window.requestAnimationFrame(() => setSupported("speechSynthesis" in window));
+    if (!("speechSynthesis" in window)) return;
+    const synthesis = window.speechSynthesis;
+    const refreshVoices = () => {
+      setVoices(synthesis.getVoices());
+    };
+    const frame = window.requestAnimationFrame(() => setSupported(true));
+    refreshVoices();
+    synthesis.addEventListener("voiceschanged", refreshVoices);
     return () => {
       window.cancelAnimationFrame(frame);
-      window.speechSynthesis?.cancel();
+      synthesis.removeEventListener("voiceschanged", refreshVoices);
+      synthesis.cancel();
     };
   }, []);
 
@@ -32,6 +54,21 @@ function ArticleAudioPlayer({ title, html }: { title: string; html: string }) {
     const articleText = new DOMParser().parseFromString(html, "text/html").body.textContent ?? "";
     const narration = new SpeechSynthesisUtterance(`${title}. ${articleText}`);
     narration.rate = rate;
+    const choice = narrationVoices.find((voice) => voice.id === voiceId) ?? narrationVoices[0];
+    const englishVoices = voices.filter((voice) => voice.lang.toLowerCase().startsWith("en"));
+    const localeVoices = choice.language === "en-NG"
+      ? englishVoices.filter((voice) => voice.lang.toLowerCase() === "en-ng" || /nigerian|nigeria/i.test(voice.name))
+      : englishVoices.filter((voice) => voice.lang.toLowerCase() === choice.language.toLowerCase());
+    const selectedVoice = localeVoices.find((voice) => genderHints[choice.gender].test(voice.name))
+      ?? localeVoices[0]
+      ?? englishVoices.find((voice) => genderHints[choice.gender].test(voice.name))
+      ?? englishVoices[0];
+    if (selectedVoice) {
+      narration.voice = selectedVoice;
+      narration.lang = selectedVoice.lang;
+    } else {
+      narration.lang = choice.language;
+    }
     narration.onstart = () => setSpeaking(true);
     narration.onend = () => setSpeaking(false);
     narration.onerror = () => {
@@ -49,8 +86,8 @@ function ArticleAudioPlayer({ title, html }: { title: string; html: string }) {
   };
 
   return (
-    <div className="my-7 flex flex-wrap items-center gap-3 rounded-sm border bg-[#f7f6f5] p-3">
-      <button type="button" onClick={speaking ? stop : listen} className="rounded-sm bg-primary px-4 py-2.5 text-xs font-bold text-white hover:bg-primary/90">
+    <div className="my-7 flex flex-col gap-3 rounded-sm border bg-[#f7f6f5] p-3 sm:flex-row sm:flex-wrap sm:items-center">
+      <button type="button" onClick={speaking ? stop : listen} className="w-full rounded-sm bg-primary px-4 py-2.5 text-xs font-bold text-white hover:bg-primary/90 sm:w-auto">
         {speaking ? "Stop listening" : "▶ Listen to this article"}
       </button>
       {speaking && (
@@ -58,7 +95,7 @@ function ArticleAudioPlayer({ title, html }: { title: string; html: string }) {
           Stop
         </button>
       )}
-      <label className="ml-auto flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+      <label className="flex min-w-0 flex-1 items-center gap-2 text-xs font-semibold text-muted-foreground sm:ml-auto sm:flex-initial">
         Speed
         <input
           type="range"
@@ -71,6 +108,19 @@ function ArticleAudioPlayer({ title, html }: { title: string; html: string }) {
           className="accent-primary"
         />
         {rate.toFixed(1)}×
+      </label>
+      <label className="flex min-w-0 flex-col gap-1 text-xs font-semibold text-muted-foreground sm:min-w-56">
+        Voice choice
+        <select
+          value={voiceId}
+          onChange={(event) => setVoiceId(event.target.value as typeof voiceId)}
+          disabled={speaking}
+          aria-label="Choose narration accent and voice"
+          className="h-10 w-full rounded border bg-white px-2 text-sm text-foreground disabled:opacity-60"
+        >
+          {narrationVoices.map((voice) => <option key={voice.id} value={voice.id}>{voice.label}</option>)}
+        </select>
+        <span className="font-normal">Uses the closest matching voice available on your device.</span>
       </label>
     </div>
   );

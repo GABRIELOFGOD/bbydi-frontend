@@ -14,20 +14,42 @@ const allowedAttributes = [
   "height", "href", "rel", "rowspan", "src", "target", "title", "width",
 ];
 
-export default function SafeHtml({ html, className }: { html: string; className?: string }) {
+export default function SafeHtml({
+  html,
+  className,
+  allowLocalBlobImages = false,
+}: {
+  html: string;
+  className?: string;
+  allowLocalBlobImages?: boolean;
+}) {
   const [safeHtml, setSafeHtml] = useState("");
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
-      setSafeHtml(DOMPurify.sanitize(html, {
+      const sanitized = DOMPurify.sanitize(html, {
         ALLOWED_TAGS: allowedTags,
         ALLOWED_ATTR: allowedAttributes,
+        ...(allowLocalBlobImages ? {
+          ALLOWED_URI_REGEXP: /^(?:(?:(?:https?|mailto|tel|callto|sms|cid|xmpp|matrix):|blob:)|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
+        } : {}),
         FORBID_TAGS: ["style", "svg", "math", "iframe", "object", "embed", "form"],
         FORBID_ATTR: ["style"],
-      }));
+      });
+      if (!allowLocalBlobImages) {
+        setSafeHtml(sanitized);
+        return;
+      }
+
+      const document = new DOMParser().parseFromString(sanitized, "text/html");
+      document.querySelectorAll("[src^='blob:']:not(img), a[href^='blob:']").forEach((element) => {
+        if (element.hasAttribute("src") && !element.matches("img")) element.removeAttribute("src");
+        if (element.hasAttribute("href")) element.removeAttribute("href");
+      });
+      setSafeHtml(document.body.innerHTML);
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [html]);
+  }, [allowLocalBlobImages, html]);
 
   return <div className={className} dangerouslySetInnerHTML={{ __html: safeHtml }} />;
 }
