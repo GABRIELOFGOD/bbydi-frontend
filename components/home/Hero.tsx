@@ -6,16 +6,17 @@ import CountUpCard from "../ui/CountUpCard";
 
 const Hero = () => {
   return (
-    <div className="w-full h-screen py-20 relative">
+    <div className="relative isolate min-h-screen w-full">
       <Image
         src="/images/hero.jpg"
         alt="Hero Image"
-        layout="fill"
-        objectFit="cover"
+        fill
+        sizes="100vw"
         quality={100}
-        className="h-fit object-cover"
+        className="object-cover"
       />
-      <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/70 to-black/50 bg-opacity-50 items-center justify-center flex w-full py-10 h-fit">
+      <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/70 to-black/50" aria-hidden="true" />
+      <div className="relative z-10 flex min-h-screen w-full items-center justify-center py-20">
         <Container className="flex flex-col gap-10 md:gap-15">
           <div className="text-white w-full md:max-w-[70%] flex flex-col gap-8">
             <div className="border-secondary border-2 rounded-full bg-primary/30 w-fit">
@@ -24,7 +25,7 @@ const Hero = () => {
             <h1
               className="text-3xl font-extrabold md:text-[51.58px] leading-[1.15] tracking-[-0.025em]"
             >
-              Building the civic power of Nigeria's <span className="text-secondary">young people</span>.
+              Building the civic power of Nigeria&apos;s <span className="text-secondary">young people</span>.
             </h1>
 
             <p className="md:text-[21px] text-base text-muted/80">BBYDI is a non-partisan, not-for-profit organisation advancing inclusive governance, youth empowerment and gender equality — with evidence, at scale, from the grassroots up.</p>

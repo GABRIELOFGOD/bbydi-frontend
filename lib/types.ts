@@ -26,6 +26,7 @@ export interface ProjectCardTypes {
 
 export interface NewTypes {
   id: string;
+  slug?: string;
   date: Date | string;
   title: string;
   content: string;

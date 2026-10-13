@@ -2,6 +2,7 @@ import type { ContentKind } from "./types";
 
 export interface ContentItem {
   _id: string;
+  slug?: string;
   kind: ContentKind;
   title: string;
   description?: string;
@@ -10,6 +11,9 @@ export interface ContentItem {
   category?: string;
   status?: string;
   image?: string;
+  imageCaption?: string;
+  imageWidth?: number;
+  imageAlignment?: "left" | "center" | "right";
   link?: string;
   location?: string;
   type?: string;
@@ -18,7 +22,7 @@ export interface ContentItem {
   date?: string;
   document?: string;
   approved: boolean;
-  postedBy?: { name: string; email: string };
+  postedBy?: { _id?: string; name: string; email?: string };
 }
 
 export interface StaffProfile {
@@ -28,6 +32,7 @@ export interface StaffProfile {
   image?: string;
   category: "leadership" | "staff";
   active: boolean;
+  displayOrder?: number;
 }
 
 export interface StaffAccount {

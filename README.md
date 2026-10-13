@@ -37,6 +37,8 @@ On backend startup, existing MongoDB programs and projects plus the hard-coded p
 
 Staff submissions remain unpublished until an administrator approves them. The Tasks page is not integrated yet.
 
+Administrators manage newsroom articles from **Dashboard → News**. The editor supports formatted text, drag-and-drop image uploads, tables, drafts, and a preview before publishing. Each published article receives a unique URL slug derived from its headline and is available under `/media/news/:slug`. The article layout includes a lead image, an optional browser text-to-speech player, related stories, and copy, native-share, email, Facebook, LinkedIn, and X sharing options. Article HTML is sanitized by the backend before it is stored and again before it is rendered.
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.

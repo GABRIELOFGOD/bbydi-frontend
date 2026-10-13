@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { DragEvent, FormEvent, useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { apiRequest } from "@/lib/api";
 import { StaffAccount, StaffProfile } from "@/lib/content";
@@ -25,9 +25,9 @@ export default function StaffManagement() {
   const [editingAccount, setEditingAccount] = useState<StaffAccount | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [draggedProfileId, setDraggedProfileId] = useState("");
 
   const load = useCallback(async () => {
-    setLoading(true);
     try {
       const [profileResult, accountResult] = await Promise.all([
         apiRequest<StaffProfile[]>("/staff/profiles/all"),
@@ -43,8 +43,27 @@ export default function StaffManagement() {
   }, []);
 
   useEffect(() => {
-    if (user?.role === "admin") void load();
-  }, [load, user?.role]);
+    if (user?.role !== "admin") return;
+    let active = true;
+    Promise.all([
+      apiRequest<StaffProfile[]>("/staff/profiles/all"),
+      apiRequest<{ data: StaffAccount[] }>("/staff/accounts/all"),
+    ])
+      .then(([profileResult, accountResult]) => {
+        if (!active) return;
+        setProfiles(profileResult);
+        setAccounts(accountResult.data);
+      })
+      .catch((error: unknown) => {
+        if (active) toast.error(error instanceof Error ? error.message : "Could not load staff");
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [user?.role]);
 
   const saveProfile = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -83,6 +102,37 @@ export default function StaffManagement() {
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not update team profile");
     }
+  };
+
+  const persistProfileOrder = async (category: StaffProfile["category"], sourceId: string, targetId: string) => {
+    if (sourceId === targetId) return;
+    const sectionProfiles = profiles.filter((profile) => profile.category === category);
+    const sourceIndex = sectionProfiles.findIndex((profile) => profile._id === sourceId);
+    const targetIndex = sectionProfiles.findIndex((profile) => profile._id === targetId);
+    if (sourceIndex < 0 || targetIndex < 0) return;
+    const reordered = [...sectionProfiles];
+    const [movedProfile] = reordered.splice(sourceIndex, 1);
+    reordered.splice(targetIndex, 0, movedProfile);
+    setProfiles((current) => [
+      ...current.filter((profile) => profile.category !== category),
+      ...reordered.map((profile, displayOrder) => ({ ...profile, displayOrder })),
+    ]);
+    try {
+      await apiRequest("/staff/profiles/reorder", {
+        method: "POST",
+        body: { category, profileIds: reordered.map((profile) => profile._id) },
+      });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not save team profile order");
+      await load();
+    }
+  };
+
+  const handleProfileDrop = (event: DragEvent<HTMLElement>, profile: StaffProfile) => {
+    event.preventDefault();
+    const sourceId = event.dataTransfer.getData("text/plain") || draggedProfileId;
+    setDraggedProfileId("");
+    if (sourceId) void persistProfileOrder(profile.category, sourceId, profile._id);
   };
 
   const editAccount = (account: StaffAccount) => {
@@ -156,21 +206,46 @@ export default function StaffManagement() {
       <section className="grid gap-6 xl:grid-cols-2">
         <div className="space-y-4">
           <h2 className="font-bold">Public team directory</h2>
-          {loading ? <p className="text-sm text-muted-foreground">Loading team profiles...</p> : profiles.map((profile) => (
-            <article key={profile._id} className="flex flex-wrap items-center justify-between gap-3 rounded border p-3">
-              <div>
-                <p className="font-semibold">{profile.name}</p>
-                <p className="text-sm text-muted-foreground">{profile.position} · {profile.category}</p>
-                <p className="text-xs">{profile.active ? "Visible on public site" : "Deactivated"}</p>
-              </div>
-              <div className="flex gap-2">
-                <button type="button" onClick={() => editProfile(profile)} className="rounded border px-3 py-1.5 text-sm">Edit</button>
-                <button type="button" onClick={() => void toggleProfile(profile)} className="rounded border px-3 py-1.5 text-sm">
-                  {profile.active ? "Deactivate" : "Reactivate"}
-                </button>
-              </div>
-            </article>
-          ))}
+          {loading ? <p className="text-sm text-muted-foreground">Loading team profiles...</p> : (["leadership", "staff"] as const).map((category) => {
+            const sectionProfiles = profiles.filter((profile) => profile.category === category);
+            return (
+              <section key={category} className="space-y-2">
+                <h3 className="pt-2 text-sm font-semibold">{category === "leadership" ? "Leadership" : "Programmes, research & operations"}</h3>
+                {sectionProfiles.map((profile, index) => (
+                  <article
+                    key={profile._id}
+                    draggable
+                    onDragStart={(event) => {
+                      setDraggedProfileId(profile._id);
+                      event.dataTransfer.setData("text/plain", profile._id);
+                      event.dataTransfer.effectAllowed = "move";
+                    }}
+                    onDragEnd={() => setDraggedProfileId("")}
+                    onDragOver={(event) => event.preventDefault()}
+                    onDrop={(event) => handleProfileDrop(event, profile)}
+                    className={`flex flex-wrap items-center justify-between gap-3 rounded border p-3 ${draggedProfileId === profile._id ? "opacity-50" : ""}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span aria-hidden="true" title="Drag to rearrange" className="cursor-grab select-none text-lg text-muted-foreground">⠿</span>
+                      <div>
+                        <p className="font-semibold">{profile.name}</p>
+                        <p className="text-sm text-muted-foreground">{profile.position} · {profile.category}</p>
+                        <p className="text-xs">{profile.active ? "Visible on public site" : "Deactivated"}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <button type="button" aria-label={`Move ${profile.name} up`} disabled={index === 0} onClick={() => void persistProfileOrder(category, profile._id, sectionProfiles[index - 1]?._id ?? profile._id)} className="rounded border px-2 py-1.5 text-sm disabled:opacity-40">↑</button>
+                      <button type="button" aria-label={`Move ${profile.name} down`} disabled={index === sectionProfiles.length - 1} onClick={() => void persistProfileOrder(category, profile._id, sectionProfiles[index + 1]?._id ?? profile._id)} className="rounded border px-2 py-1.5 text-sm disabled:opacity-40">↓</button>
+                      <button type="button" onClick={() => editProfile(profile)} className="rounded border px-3 py-1.5 text-sm">Edit</button>
+                      <button type="button" onClick={() => void toggleProfile(profile)} className="rounded border px-3 py-1.5 text-sm">
+                        {profile.active ? "Deactivate" : "Reactivate"}
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </section>
+            );
+          })}
         </div>
         <form onSubmit={saveProfile} className="h-fit space-y-4 rounded border p-5">
           <h2 className="font-semibold">{editingProfile ? "Edit team profile" : "Add public team profile"}</h2>
