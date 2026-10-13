@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Input } from "./ui/Input.tsx";
+import { Input } from "./ui/Input";
 import { Button } from "./ui/button";
 import { SidebarGroupLabel } from "./ui/sidebar";
 import { useState } from "react";

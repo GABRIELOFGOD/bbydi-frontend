@@ -1,6 +1,6 @@
 "use client";
 
-import { Input } from "../ui/input";
+import { Input } from "../ui/Input";
 import { ImageDropzone } from "../ui/ImageDropzone";
 import { useState } from "react";
 import { cn, slugify } from "@/lib/utils";
@@ -55,7 +55,7 @@ const PostProgram = () => {
             placeholder="Program title"
             className="w-full rounded h-10"
             value={title}
-            onChange={e => handleTitleChange(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleTitleChange(e.target.value)}
           />
         </div>
         <div className="flex flex-col gap-2 w-full">
@@ -64,7 +64,7 @@ const PostProgram = () => {
             placeholder="Program category"
             className="w-full rounded h-10"
             value={category}
-            onChange={e => setCategory(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCategory(e.target.value)}
           />
         </div>
         <div className="flex flex-col gap-2 w-full">

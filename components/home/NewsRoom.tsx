@@ -10,6 +10,7 @@ import NewsCard from "../ui/NewsCard";
 import Link from "next/link";
 import { usePublicContent } from "@/lib/usePublicContent";
 import { ContentItem } from "@/lib/content";
+import { NewTypes } from "@/lib/types";
 
 const mapNews = (item: ContentItem): NewTypes => ({
   id: item._id,
