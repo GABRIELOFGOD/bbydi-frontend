@@ -9,6 +9,7 @@ import Accountability from "@/components/about/Accountability";
 export const metadata: Metadata = {
   title: "About us",
   description: "A non-partisan, not-for-profit civic organisation with a decade-long record of advocating for inclusive policies that prioritise women and youth.",
+  alternates: { canonical: "/about" },
 };
 
 const AboutPage = () => {

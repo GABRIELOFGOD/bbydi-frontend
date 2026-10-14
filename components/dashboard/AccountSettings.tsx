@@ -7,21 +7,29 @@ import { useUser } from "@/providers/userProvider";
 
 export default function AccountSettings() {
   const { user, refreshUser } = useUser();
-  const [profile, setProfile] = useState({ name: "", email: "", position: "" });
+  const isAdmin = user?.role === "admin";
+  const [profile, setProfile] = useState({ name: "", email: "", position: "", bio: "" });
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [profileSaving, setProfileSaving] = useState(false);
   const [passwordSaving, setPasswordSaving] = useState(false);
 
   useEffect(() => {
-    if (user) setProfile({ name: user.name, email: user.email, position: user.position });
-  }, [user]);
+    if (!user) return;
+    const frame = window.requestAnimationFrame(() => {
+      setProfile({ name: user.name, email: user.email, position: user.position, bio: isAdmin ? user.bio ?? "" : "" });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [isAdmin, user]);
 
   const saveProfile = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setProfileSaving(true);
     try {
-      const result = await apiRequest<{ message: string }>("/auth/me", { method: "PATCH", body: profile });
+      const result = await apiRequest<{ message: string }>("/auth/me", {
+        method: "PATCH",
+        body: { name: profile.name, email: profile.email, position: profile.position, ...(isAdmin ? { bio: profile.bio } : {}) },
+      });
       await refreshUser();
       toast.success(result.message);
     } catch (error) {
@@ -73,6 +81,18 @@ export default function AccountSettings() {
             />
           </label>
         ))}
+        {isAdmin && <label className="block space-y-1.5 text-sm font-medium">
+          <span>Biography</span>
+          <textarea
+            value={profile.bio}
+            onChange={(event) => setProfile((current) => ({ ...current, bio: event.target.value }))}
+            maxLength={5000}
+            rows={7}
+            className="w-full rounded border p-3"
+            placeholder="Share your background, experience, and work at BBYDI."
+          />
+          <span className="block text-xs font-normal text-muted-foreground">Up to 5,000 characters. Your biography may appear on your public team profile.</span>
+        </label>}
         <button disabled={profileSaving} className="rounded bg-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">
           {profileSaving ? "Saving..." : "Save profile"}
         </button>

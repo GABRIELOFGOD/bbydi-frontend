@@ -9,6 +9,7 @@ export type ContentKind =
   | "program"
   | "project"
   | "news"
+  | "blog"
   | "opportunity"
   | "report"
   | "publication"
@@ -87,4 +88,5 @@ export interface User {
   email: string;
   role: UserRole;
   position: string;
+  bio?: string;
 }

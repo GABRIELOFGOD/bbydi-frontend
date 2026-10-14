@@ -9,7 +9,8 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Our Expertise",
-  description: "What BBYDI can be commissioned to do — the capability page funders and partners read before they write to you."
+  description: "What BBYDI can be commissioned to do — the capability page funders and partners read before they write to you.",
+  alternates: { canonical: "/our-expertise" },
 };
 
 const OurExpertise = () => {

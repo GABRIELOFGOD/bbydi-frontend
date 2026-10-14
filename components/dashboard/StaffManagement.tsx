@@ -9,10 +9,12 @@ import { useUser } from "@/providers/userProvider";
 type ProfileForm = {
   name: string;
   position: string;
-  category: "leadership" | "staff";
+  category: "leadership" | "staff" | "volunteer";
+  bio: string;
+  accountId: string;
 };
 
-const emptyProfile: ProfileForm = { name: "", position: "", category: "staff" };
+const emptyProfile: ProfileForm = { name: "", position: "", category: "staff", bio: "", accountId: "" };
 
 export default function StaffManagement() {
   const { user } = useUser();
@@ -21,7 +23,7 @@ export default function StaffManagement() {
   const [profileForm, setProfileForm] = useState<ProfileForm>(emptyProfile);
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [editingProfile, setEditingProfile] = useState<StaffProfile | null>(null);
-  const [accountForm, setAccountForm] = useState({ name: "", email: "", position: "" });
+  const [accountForm, setAccountForm] = useState({ name: "", email: "", position: "", bio: "" });
   const [editingAccount, setEditingAccount] = useState<StaffAccount | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -88,7 +90,13 @@ export default function StaffManagement() {
 
   const editProfile = (profile: StaffProfile) => {
     setEditingProfile(profile);
-    setProfileForm({ name: profile.name, position: profile.position, category: profile.category });
+    setProfileForm({
+      name: profile.name,
+      position: profile.position,
+      category: profile.category,
+      bio: profile.bio ?? "",
+      accountId: profile.accountId ?? "",
+    });
     setProfileImage(null);
   };
 
@@ -137,7 +145,7 @@ export default function StaffManagement() {
 
   const editAccount = (account: StaffAccount) => {
     setEditingAccount(account);
-    setAccountForm({ name: account.name, email: account.email, position: account.position });
+    setAccountForm({ name: account.name, email: account.email, position: account.position, bio: account.bio ?? "" });
   };
 
   const saveAccount = async (event: FormEvent<HTMLFormElement>) => {
@@ -164,8 +172,8 @@ export default function StaffManagement() {
     setSaving(true);
     try {
       await apiRequest("/staff", { method: "POST", body: accountForm });
-      toast.success("Staff account created. Send the setup invitation from the account list.");
-      setAccountForm({ name: "", email: "", position: "" });
+      toast.success("Staff account created and setup link sent to the organization webmail.");
+      setAccountForm({ name: "", email: "", position: "", bio: "" });
       await load();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not create staff account");
@@ -206,11 +214,11 @@ export default function StaffManagement() {
       <section className="grid gap-6 xl:grid-cols-2">
         <div className="space-y-4">
           <h2 className="font-bold">Public team directory</h2>
-          {loading ? <p className="text-sm text-muted-foreground">Loading team profiles...</p> : (["leadership", "staff"] as const).map((category) => {
+          {loading ? <p className="text-sm text-muted-foreground">Loading team profiles...</p> : (["leadership", "staff", "volunteer"] as const).map((category) => {
             const sectionProfiles = profiles.filter((profile) => profile.category === category);
             return (
               <section key={category} className="space-y-2">
-                <h3 className="pt-2 text-sm font-semibold">{category === "leadership" ? "Leadership" : "Programmes, research & operations"}</h3>
+                <h3 className="pt-2 text-sm font-semibold">{category === "leadership" ? "Leadership" : category === "staff" ? "Programmes, research & operations" : "Volunteers"}</h3>
                 {sectionProfiles.map((profile, index) => (
                   <article
                     key={profile._id}
@@ -243,6 +251,7 @@ export default function StaffManagement() {
                     </div>
                   </article>
                 ))}
+                {!editingAccount && <p className="text-xs text-muted-foreground">The staff member will receive a secure account setup link at this address after creation.</p>}
               </section>
             );
           })}
@@ -259,7 +268,20 @@ export default function StaffManagement() {
             <select value={profileForm.category} onChange={(event) => setProfileForm((current) => ({ ...current, category: event.target.value as ProfileForm["category"] }))} className="mt-1 block h-10 w-full rounded border px-3">
               <option value="leadership">Leadership</option>
               <option value="staff">Programmes, research & operations</option>
+              <option value="volunteer">Volunteers</option>
             </select>
+          </label>
+          <label className="block space-y-1.5 text-sm font-medium">Login account
+            <select value={profileForm.accountId} onChange={(event) => setProfileForm((current) => ({ ...current, accountId: event.target.value }))} className="mt-1 block h-10 w-full rounded border px-3">
+              <option value="">Not linked to an account</option>
+              {accounts.filter((account) => !account.isBlocked).map((account) => (
+                <option key={account._id} value={account._id}>{account.name} — {account.email}</option>
+              ))}
+            </select>
+            <span className="block text-xs font-normal text-muted-foreground">Linking an account displays its biography and published posts on this profile.</span>
+          </label>
+          <label className="block space-y-1.5 text-sm font-medium">Biography
+            <textarea value={profileForm.bio} onChange={(event) => setProfileForm((current) => ({ ...current, bio: event.target.value }))} maxLength={5000} rows={6} className="mt-1 block w-full rounded border p-3" placeholder="Add a public biography for this team member." />
           </label>
           <label className="block space-y-1.5 text-sm font-medium">Photo
             <input type="file" accept="image/*" onChange={(event) => setProfileImage(event.target.files?.[0] ?? null)} className="mt-1 block w-full text-sm" />
@@ -293,16 +315,19 @@ export default function StaffManagement() {
           <h2 className="font-semibold">{editingAccount ? "Edit staff account" : "Create staff account"}</h2>
           {([
             ["name", "Name", "text"],
-            ["email", "Email", "email"],
+            ["email", "Organization webmail", "email"],
             ["position", "Position", "text"],
           ] as const).map(([field, label, type]) => (
             <label key={field} className="block space-y-1.5 text-sm font-medium">{label}
               <input type={type} required={field !== "position"} value={accountForm[field]} onChange={(event) => setAccountForm((current) => ({ ...current, [field]: event.target.value }))} className="mt-1 block h-10 w-full rounded border px-3" />
             </label>
           ))}
+          <label className="block space-y-1.5 text-sm font-medium">Biography
+            <textarea value={accountForm.bio} onChange={(event) => setAccountForm((current) => ({ ...current, bio: event.target.value }))} maxLength={5000} rows={5} className="mt-1 block w-full rounded border p-3" placeholder="Staff biography" />
+          </label>
           <div className="flex gap-2">
-            <button disabled={saving} className="rounded bg-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">{saving ? "Saving..." : editingAccount ? "Save account" : "Create account"}</button>
-            {editingAccount && <button type="button" onClick={() => { setEditingAccount(null); setAccountForm({ name: "", email: "", position: "" }); }} className="rounded border px-4 py-2 text-sm">Cancel</button>}
+            <button disabled={saving} className="rounded bg-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">{saving ? "Saving..." : editingAccount ? "Save account" : "Create account and send setup link"}</button>
+            {editingAccount && <button type="button" onClick={() => { setEditingAccount(null); setAccountForm({ name: "", email: "", position: "", bio: "" }); }} className="rounded border px-4 py-2 text-sm">Cancel</button>}
           </div>
         </form>
       </section>

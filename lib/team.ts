@@ -3,7 +3,8 @@ export interface TeamDataType {
   name: string;
   role: string;
   image?: string;
-  category: "admin" | "staff"
+  category: "admin" | "staff" | "volunteer"
+  bio?: string;
 }
 
 export const AdminTeamData: TeamDataType[] = [
@@ -143,28 +144,28 @@ export const StaffTeamData: TeamDataType[] = [
     category: "staff"
   },
   {
-    id: "13",
+    id: "14",
     name: "Onyeke Emmanuel Edache",
     role: "Research Associate",
     image: "/images/team/emmanuel.jpg",
     category: "staff"
   },
   {
-    id: "14",
+    id: "15",
     name: "Usman Mashood Adekunle",
     role: "Community Engagement Officer",
     image: "/images/team/adekunle.jpg",
     category: "staff"
   },
   {
-    id: "15",
+    id: "16",
     name: "Dr Sikiru Issa Nuhu",
     role: "Lead, Research and Training",
     image: "/images/team/sikiru.jpg",
     category: "staff"
   },
   {
-    id: "16",
+    id: "17",
     name: "Ogunlaja Oluwafemi Temitope",
     role: "Communications Intern",
     image: "/images/team/temitope.jpg",

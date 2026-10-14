@@ -30,7 +30,8 @@ const OurTeam = () => {
             name: profile.name,
             role: profile.position,
             image: profile.image,
-            category: profile.category === "leadership" ? "admin" : "staff",
+            category: profile.category === "leadership" ? "admin" : profile.category,
+            bio: profile.bio,
           })));
         }
       } catch (error) {
@@ -44,9 +45,10 @@ const OurTeam = () => {
   }, []);
   const leaders = team.filter((person) => person.category === "admin");
   const staff = team.filter((person) => person.category === "staff");
+  const volunteers = team.filter((person) => person.category === "volunteer");
 
   return (
-    <div className="w-full bg-muted flex py-20 gap-5">
+    <div id="team" className="w-full bg-muted flex py-20 gap-5">
       <Container className="flex flex-col gap-5">
         <SectionTitle title="Our team" />
         <div className="flex flex-col gap-5 w-full md:w-175">
@@ -73,6 +75,13 @@ const OurTeam = () => {
                 {...team}
               />
             ))}
+          </div>
+        </div>
+        <div className="flex flex-col gap-3 mt-5">
+          <h2 className="text-gray-500 uppercase text-[10px] tracking-wider font-semibold">Volunteers</h2>
+          <p className="max-w-2xl text-sm text-gray-700">People who give their time and expertise to BBYDI without being on the payroll.</p>
+          <div className="grid grid-cols-2 gap-5 md:grid-cols-4 lg:grid-cols-6">
+            {volunteers.map((volunteer) => <StaffTeamCard key={volunteer.id} {...volunteer} />)}
           </div>
         </div>
       </Container>

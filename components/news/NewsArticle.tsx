@@ -126,22 +126,22 @@ function ArticleAudioPlayer({ title, html }: { title: string; html: string }) {
   );
 }
 
-export default function NewsArticle({ id: slug }: { id: string }) {
-  const [article, setArticle] = useState<ContentItem | null>(null);
+export default function NewsArticle({ id: slug, kind = "news", initialArticle }: { id: string; kind?: "news" | "blog"; initialArticle?: ContentItem }) {
+  const [article, setArticle] = useState<ContentItem | null>(initialArticle ?? null);
   const [related, setRelated] = useState<ContentItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialArticle);
   const [error, setError] = useState("");
 
   useEffect(() => {
     let active = true;
     const loadArticle = async () => {
       try {
-        const item = await apiRequest<ContentItem>(`/content/news/${encodeURIComponent(slug)}`);
+        const item = await apiRequest<ContentItem>(`/content/${kind}/${encodeURIComponent(slug)}`);
         if (active) setArticle(item);
       } catch (requestError) {
-        const fallback = News.find((item) =>
+        const fallback = kind === "news" ? News.find((item) =>
           item.id === slug || createNewsSlug(item.title) === slug,
-        );
+        ) : undefined;
         if (active && fallback) {
           setArticle({
             _id: fallback.id,
@@ -162,12 +162,12 @@ export default function NewsArticle({ id: slug }: { id: string }) {
     };
     const loadRelated = async () => {
       try {
-        const items = await apiRequest<ContentItem[]>("/content/news");
+        const items = await apiRequest<ContentItem[]>(`/content/${kind}`);
         if (active) setRelated(items.filter((item) => (item.slug || item._id) !== slug).slice(0, 3));
       } catch (requestError) {
         const message = requestError instanceof Error ? requestError.message : "Could not load related articles";
         if (active) {
-          setRelated(News.filter((item) => createNewsSlug(item.title) !== slug).slice(0, 3).map((item) => ({
+          setRelated(kind === "news" ? News.filter((item) => createNewsSlug(item.title) !== slug).slice(0, 3).map((item) => ({
             _id: item.id,
             slug: createNewsSlug(item.title),
             kind: "news",
@@ -175,8 +175,8 @@ export default function NewsArticle({ id: slug }: { id: string }) {
             description: item.content,
             category: "News",
             approved: true,
-          })));
-          toast.error(message);
+          })) : []);
+          if (kind === "news") toast.error(message);
         }
       }
     };
@@ -185,19 +185,19 @@ export default function NewsArticle({ id: slug }: { id: string }) {
     return () => {
       active = false;
     };
-  }, [slug]);
+  }, [initialArticle, kind, slug]);
 
   if (loading) return <main className="mx-auto min-h-[50vh] max-w-4xl px-5 py-16 text-sm text-muted-foreground">Loading article...</main>;
   if (!article) {
     return (
       <main className="mx-auto min-h-[50vh] max-w-4xl px-5 py-16">
         <p className="rounded border p-5 text-sm text-muted-foreground">{error || "Article not found"}</p>
-        <Link href="/media#news" className="mt-5 inline-block font-semibold text-primary hover:underline">Back to newsroom</Link>
+        <Link href={kind === "blog" ? "/blog" : "/media#news"} className="mt-5 inline-block font-semibold text-primary hover:underline">Back to {kind === "blog" ? "blog" : "newsroom"}</Link>
       </main>
     );
   }
 
-  const publishedDate = article.date ? new Date(article.date) : null;
+  const publishedDate = article.date || article.createdAt ? new Date(article.date || article.createdAt || "") : null;
   const dateLabel = publishedDate && !Number.isNaN(publishedDate.getTime())
     ? publishedDate.toLocaleDateString("en-NG", { year: "numeric", timeZone: "UTC" })
     : "";
@@ -210,7 +210,7 @@ export default function NewsArticle({ id: slug }: { id: string }) {
           <p className="mb-5 text-xs text-white/50">
             <Link href="/" className="hover:text-white">Home</Link>
             {" / "}
-            <Link href="/media#news" className="hover:text-white">Media &amp; Publications</Link>
+            <Link href={kind === "blog" ? "/blog" : "/media#news"} className="hover:text-white">{kind === "blog" ? "Blog" : "Media &amp; Publications"}</Link>
             {article.category && ` / ${article.category}`}
           </p>
           {article.category && (
@@ -223,7 +223,7 @@ export default function NewsArticle({ id: slug }: { id: string }) {
           </h1>
           {article.summary && <p className="mt-3 max-w-2xl text-sm leading-6 text-white/70">{article.summary}</p>}
           <p className="mt-4 text-[10px] font-bold uppercase tracking-widest text-white/50">
-            {[dateLabel, locationLabel].filter(Boolean).join(" · ")}
+            {[article.postedBy?.name, article.postedBy?.position, dateLabel, locationLabel].filter(Boolean).join(" · ")}
           </p>
         </div>
       </header>
@@ -247,8 +247,8 @@ export default function NewsArticle({ id: slug }: { id: string }) {
             <NewsShareButtons title={article.title} />
           </div>
           <div className="mt-6 flex flex-wrap gap-3 border-t pt-5">
-            <Link href="/media#news" className="rounded-sm border border-primary px-4 py-2.5 text-xs font-bold text-primary hover:bg-primary/5">
-              ← All news
+            <Link href={kind === "blog" ? "/blog" : "/media#news"} className="rounded-sm border border-primary px-4 py-2.5 text-xs font-bold text-primary hover:bg-primary/5">
+              ← All {kind === "blog" ? "blog posts" : "news"}
             </Link>
             <Link href="/partner-with-us" className="rounded-sm bg-primary px-4 py-2.5 text-xs font-bold text-white hover:bg-primary/90">
               Work with us
@@ -266,7 +266,7 @@ export default function NewsArticle({ id: slug }: { id: string }) {
               {related.map((item) => (
                 <Link
                   key={item._id}
-                  href={`/media/news/${item.slug || item._id}`}
+                  href={kind === "blog" ? `/blog/${item.slug}` : `/media/news/${item.slug || item._id}`}
                   className="group flex min-h-56 flex-col rounded-sm border bg-white p-5 transition-colors hover:border-primary/50"
                 >
                   <span className="text-xs font-extrabold tracking-wide text-primary">{item.category || "News"}</span>

@@ -33,6 +33,8 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 Set `NEXT_PUBLIC_BASE_URL` to the backend API root (for example, `http://localhost:5000/api`). The backend stores dashboard-managed programs, projects, news, opportunities, reports, publications, partners, team profiles, contact messages, and notifications in MongoDB.
 
+Set `NEXT_PUBLIC_SITE_URL` to the canonical public website origin (for example, `https://thebrainbuilders.org`) in production. The frontend publishes `robots.txt` and a sitemap containing public pages, published news and blog articles, and public team profiles. Public article and staff pages are server-rendered with page-specific metadata and structured data; account and dashboard routes are marked noindex. Submit `/sitemap.xml` in Google Search Console and Bing Webmaster Tools after deployment. Indexing is controlled by search engines and cannot be guaranteed by the site alone.
+
 On backend startup, existing MongoDB programs and projects plus the hard-coded programs, projects, news, opportunities, publications, reports, and team directory are migrated additively. Existing approvals are retained; seeded public content starts published. Subsequent starts do not overwrite dashboard edits. Real partner entries and downloadable report files can be added from the dashboard; the previous “Partner 1” placeholders are not migrated.
 
 Staff submissions remain unpublished until an administrator approves them. The Tasks page is not integrated yet.

@@ -15,13 +15,17 @@ export const NavItemsList = [
     label: "Programming Areas",
     path: "/programs"
   },
-  {
-    label: "projects",
-    path: "/projects"
-  },
+  // {
+  //   label: "projects",
+  //   path: "/projects"
+  // },
   {
     label: "our expertise",
     path: "/our-expertise"
+  },
+  {
+    label: "Blog",
+    path: "/blog"
   },
   {
     label: "media & publications",
@@ -533,17 +537,17 @@ export const Organisation = [
   {
     id: "2",
     text: "Governance",
-    path: "/governance"
+    path: "/about"
   },
   {
     id: "3",
     text: "Annual reports",
-    path: "/report"
+    path: "/media"
   },
   {
     id: "4",
     text: "Our expertise",
-    path: "/expertise"
+    path: "/our-expertise"
   }
 ];
 
@@ -567,6 +571,11 @@ export const Work = [
     id: "4",
     text: "Newsroom",
     path: "/media#news"
+  },
+  {
+    id: "5",
+    text: "Blog",
+    path: "/blog"
   }
 ];
 
@@ -579,17 +588,17 @@ export const GetInvolved = [
   {
     id: "2",
     text: "Partner with us",
-    path: "/partner"
+    path: "/partner-with-us"
   },
   {
     id: "3",
     text: "Volunteer",
-    path: "/partner#volunteer"
+    path: "/partner-with-us"
   },
   {
     id: "4",
     text: "Contact",
-    path: "/contact"
+    path: "/partner-with-us"
   }
 ];
 

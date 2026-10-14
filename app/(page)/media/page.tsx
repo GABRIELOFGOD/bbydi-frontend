@@ -6,6 +6,7 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Media & Publications",
   description: "News, reports, toolkits and resources — the searchable archive that makes an organisation citable.",
+  alternates: { canonical: "/media" },
 };
 
 const MediaPage = () => {

@@ -20,9 +20,11 @@ export interface ContentItem {
   deadline?: string;
   publisher?: string;
   date?: string;
+  createdAt?: string;
   document?: string;
   approved: boolean;
-  postedBy?: { _id?: string; name: string; email?: string };
+  featured?: boolean;
+  postedBy?: { _id?: string; name: string; email?: string; position?: string };
 }
 
 export interface StaffProfile {
@@ -30,7 +32,9 @@ export interface StaffProfile {
   name: string;
   position: string;
   image?: string;
-  category: "leadership" | "staff";
+  bio?: string;
+  accountId?: string;
+  category: "leadership" | "staff" | "volunteer";
   active: boolean;
   displayOrder?: number;
 }
@@ -40,6 +44,7 @@ export interface StaffAccount {
   name: string;
   email: string;
   position: string;
+  bio?: string;
   avatar?: string;
   isVerified: boolean;
   isBlocked: boolean;

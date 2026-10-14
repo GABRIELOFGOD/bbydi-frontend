@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Accessibility statement",
+  description: "Learn about BBYDI's accessibility features, inclusive reading tools, and how to report an accessibility barrier.",
+  alternates: { canonical: "/accessibility" },
+};
+
 export default function AccessibilityStatementPage() {
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-5 py-12 sm:px-8 sm:py-16">

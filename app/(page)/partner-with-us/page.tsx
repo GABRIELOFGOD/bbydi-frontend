@@ -5,7 +5,8 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Partner With Us",
-  description: "Funders, implementing partners, media and volunteers — tell us which you are and we will route you to the right person."
+  description: "Funders, implementing partners, media and volunteers — tell us which you are and we will route you to the right person.",
+  alternates: { canonical: "/partner-with-us" },
 }
 
 const PartnerWithUs = () => {

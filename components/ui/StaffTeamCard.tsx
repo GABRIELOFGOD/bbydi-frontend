@@ -1,10 +1,11 @@
 
 import { TeamDataType } from "@/lib/team";
 import Image from "next/image";
+import Link from "next/link";
 
-const StaffTeamCard = ({ image, category, id, name, role }: TeamDataType) => {
+const StaffTeamCard = ({ image, id, name, role }: TeamDataType) => {
   return (
-    <div className="w-full flex flex-col gap-5">
+    <Link href={`/about/team/${encodeURIComponent(id)}`} aria-label={`Read more about ${name}`} className="w-full flex flex-col gap-5 rounded-sm p-2 transition-colors hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
       {image ? (
         <Image
           src={image}
@@ -23,7 +24,7 @@ const StaffTeamCard = ({ image, category, id, name, role }: TeamDataType) => {
         <h4 className="font-extrabold">{name}</h4>
         <p className="text-sm text-gray-500">{role}</p>
       </div>
-    </div>
+    </Link>
   )
 }
 

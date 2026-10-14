@@ -56,6 +56,12 @@ const CONTENT_ITEMS = [
     icon: <NewspaperIcon size={16} />
   },
   {
+    id: 7,
+    item: "Blog",
+    path: "/dashboard/blog",
+    icon: <NewspaperIcon size={16} />
+  },
+  {
     id: 4,
     item: "Opportunities",
     path: "/dashboard/opportunities",

@@ -25,6 +25,7 @@ type FormValues = {
   location: string;
   deadline: string;
   link: string;
+  featured: string;
 };
 
 const emptyForm: FormValues = {
@@ -40,12 +41,14 @@ const emptyForm: FormValues = {
   location: "",
   deadline: "",
   link: "",
+  featured: "false",
 };
 
 const kindFields: Record<ContentKind, (keyof FormValues)[]> = {
   program: ["category", "description"],
   project: ["category", "status", "context", "summary"],
   news: ["description", "publisher", "date"],
+  blog: ["category", "description", "publisher", "date"],
   opportunity: ["description", "status", "type", "location", "deadline", "link"],
   report: ["category", "description", "date"],
   publication: ["category", "description", "date"],
@@ -65,13 +68,14 @@ const fieldLabels: Record<keyof FormValues, string> = {
   location: "Location",
   deadline: "Deadline",
   link: "External link",
+  featured: "Featured on author profile",
 };
 
 const longFields: (keyof FormValues)[] = ["description", "context", "summary"];
 
 export default function ContentManager({ kind, title }: ContentManagerProps) {
   const { user } = useUser();
-  const canManage = user?.role === "admin";
+  const isAdmin = user?.role === "admin";
   const [items, setItems] = useState<ContentItem[]>([]);
   const [form, setForm] = useState<FormValues>(emptyForm);
   const [image, setImage] = useState<File | null>(null);
@@ -81,7 +85,6 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
   const [saving, setSaving] = useState(false);
 
   const loadItems = useCallback(async () => {
-    setLoading(true);
     try {
       const result = await apiRequest<ContentItem[]>(`/content/${kind}/all`);
       setItems(result);
@@ -93,8 +96,15 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
   }, [kind, title]);
 
   useEffect(() => {
-    void loadItems();
-  }, [loadItems]);
+    let active = true;
+    void apiRequest<ContentItem[]>(`/content/${kind}/all`)
+      .then((result) => { if (active) setItems(result); })
+      .catch((error: unknown) => {
+        if (active) toast.error(error instanceof Error ? error.message : `Could not load ${title.toLowerCase()}`);
+      })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [kind, title]);
 
   const resetForm = () => {
     setForm(emptyForm);
@@ -118,6 +128,7 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
       location: item.location ?? "",
       deadline: item.deadline ?? "",
       link: item.link ?? "",
+      featured: String(item.featured ?? false),
     });
     setImage(null);
     setDocument(null);
@@ -198,14 +209,19 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
                     <p className={`mt-2 text-xs font-semibold ${item.approved ? "text-green-700" : "text-amber-700"}`}>
                       {item.approved ? "Published" : "Awaiting approval"}
                     </p>
+                    {item.featured && <p className="mt-1 text-xs font-semibold text-primary">Featured on author profile</p>}
                   </div>
-                  {canManage && (
+                  {(isAdmin || item.postedBy?._id === user?._id) && (
                     <div className="flex shrink-0 flex-wrap gap-2">
                       <button type="button" onClick={() => editItem(item)} className="rounded border px-3 py-1.5 text-sm">Edit</button>
-                      <button type="button" onClick={() => void setPublished(item)} className="rounded border px-3 py-1.5 text-sm">
-                        {item.approved ? "Unpublish" : "Publish"}
-                      </button>
-                      <button type="button" onClick={() => void removeItem(item)} className="rounded border border-destructive px-3 py-1.5 text-sm text-destructive">Delete</button>
+                      {(isAdmin || item.postedBy?._id === user?._id) && <>
+                        <button type="button" onClick={() => void setPublished(item)} className="rounded border px-3 py-1.5 text-sm">
+                          {item.approved ? "Unpublish" : "Publish"}
+                        </button>
+                      </>}
+                      {isAdmin && <>
+                        <button type="button" onClick={() => void removeItem(item)} className="rounded border border-destructive px-3 py-1.5 text-sm text-destructive">Delete</button>
+                      </>}
                     </div>
                   )}
                 </article>
@@ -241,6 +257,17 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
               )}
             </label>
           ))}
+          {isAdmin && (
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <input
+                type="checkbox"
+                checked={form.featured === "true"}
+                onChange={(event) => setForm((current) => ({ ...current, featured: String(event.target.checked) }))}
+                className="size-4 accent-primary"
+              />
+              Feature this item on its author&apos;s profile
+            </label>
+          )}
           {kind !== "news" && kind !== "opportunity" && kind !== "partner" && (
             <label className="block space-y-1.5 text-sm font-medium">
               <span>Image</span>
@@ -261,7 +288,7 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
             </label>
           )}
           <div className="flex gap-2">
-            <button disabled={saving} className="rounded bg-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">
+            <button disabled={saving || !user} className="rounded bg-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">
               {saving ? "Saving..." : editing ? "Save changes" : "Create"}
             </button>
             {editing && <button type="button" onClick={resetForm} className="rounded border px-4 py-2 text-sm">Cancel</button>}

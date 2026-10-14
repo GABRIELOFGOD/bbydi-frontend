@@ -5,7 +5,8 @@ import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: "A browsable record of what BBYDI is delivering, where, with whom, and what it has changed."
+  description: "A browsable record of what BBYDI is delivering, where, with whom, and what it has changed.",
+  alternates: { canonical: "/projects" },
 }
 
 const ProjectsPage = () => {

@@ -16,6 +16,7 @@ import { toast } from "sonner";
 type NewsRichTextEditorProps = {
   initialContent: string;
   onChange: (html: string) => void;
+  kind?: "news" | "blog";
 };
 
 type UploadResponse = { data: { url: string } };
@@ -67,7 +68,7 @@ const ArticleImage = ImageExtension.extend({
 });
 
 const NewsRichTextEditor = forwardRef<NewsRichTextEditorHandle, NewsRichTextEditorProps>(
-function NewsRichTextEditor({ initialContent, onChange }, ref) {
+function NewsRichTextEditor({ initialContent, onChange, kind = "news" }, ref) {
   const fileInput = useRef<HTMLInputElement>(null);
   const imageUploadMode = useRef<"single" | "gallery">("single");
   const galleryColumns = useRef(2);
@@ -143,7 +144,7 @@ function NewsRichTextEditor({ initialContent, onChange }, ref) {
       for (const { url, file } of pending) {
         const formData = new FormData();
         formData.append("image", file);
-        const result = await apiRequest<UploadResponse>("/content/news/images", {
+        const result = await apiRequest<UploadResponse>(`/content/${kind}/images`, {
           method: "POST",
           body: formData,
         });
@@ -176,7 +177,7 @@ function NewsRichTextEditor({ initialContent, onChange }, ref) {
       setUploading(false);
       if (fileInput.current) fileInput.current.value = "";
     }
-  }, [editor]);
+  }, [editor, kind]);
 
   useImperativeHandle(ref, () => ({
     uploadPendingImages,

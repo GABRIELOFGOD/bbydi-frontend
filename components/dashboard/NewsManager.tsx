@@ -7,7 +7,7 @@ import { ContentItem } from "@/lib/content";
 import { useUser } from "@/providers/userProvider";
 import { toast } from "sonner";
 
-export default function NewsManager() {
+export default function NewsManager({ kind = "news" }: { kind?: "news" | "blog" }) {
   const { user, loading: userLoading } = useUser();
   const [items, setItems] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -16,20 +16,20 @@ export default function NewsManager() {
   const loadNews = useCallback(async () => {
     setLoading(true);
     try {
-      setItems(await apiRequest<ContentItem[]>("/content/news/all"));
+      setItems(await apiRequest<ContentItem[]>(`/content/${kind}/all`));
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not load news");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [kind]);
 
   useEffect(() => {
-    if (!isAdmin) return;
+    if (!user?._id) return;
     let active = true;
     const load = async () => {
       try {
-        const result = await apiRequest<ContentItem[]>("/content/news/all");
+        const result = await apiRequest<ContentItem[]>(`/content/${kind}/all`);
         if (active) setItems(result);
       } catch (error) {
         if (active) toast.error(error instanceof Error ? error.message : "Could not load news");
@@ -41,15 +41,15 @@ export default function NewsManager() {
     return () => {
       active = false;
     };
-  }, [isAdmin]);
+  }, [kind, user?._id]);
 
   const togglePublished = async (item: ContentItem) => {
     try {
-      await apiRequest(`/content/news/${item._id}/approval`, {
+      await apiRequest(`/content/${kind}/${item._id}/approval`, {
         method: "PATCH",
         body: { approved: !item.approved },
       });
-      toast.success(item.approved ? "News unpublished" : "News published");
+      toast.success(item.approved ? `${kind === "blog" ? "Blog post" : "News"} unpublished` : `${kind === "blog" ? "Blog post" : "News"} published`);
       await loadNews();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not update news");
@@ -59,34 +59,34 @@ export default function NewsManager() {
   const deleteNews = async (item: ContentItem) => {
     if (!window.confirm(`Delete "${item.title}"?`)) return;
     try {
-      await apiRequest(`/content/news/${item._id}`, { method: "DELETE" });
-      toast.success("News deleted");
+      await apiRequest(`/content/${kind}/${item._id}`, { method: "DELETE" });
+      toast.success(`${kind === "blog" ? "Blog post" : "News"} deleted`);
       await loadNews();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not delete news");
     }
   };
 
-  if (userLoading || (isAdmin && loading)) {
-    return <p className="text-sm text-muted-foreground">Loading newsroom...</p>;
+  if (userLoading || loading) {
+    return <p className="text-sm text-muted-foreground">Loading {kind === "blog" ? "blog" : "newsroom"}...</p>;
   }
-  if (!isAdmin) {
-    return <p className="rounded border p-5 text-sm text-muted-foreground">Only administrators can manage newsroom articles.</p>;
+  if (!user) {
+    return <p className="rounded border p-5 text-sm text-muted-foreground">Please sign in to manage your articles.</p>;
   }
 
   return (
     <section className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Newsroom</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Write, preview, and publish news for your readers.</p>
+          <h1 className="text-2xl font-bold">{kind === "blog" ? "Blog" : "Newsroom"}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{isAdmin ? `Write, preview, publish, and manage ${kind === "blog" ? "blog posts" : "newsroom articles"}.` : `Write and manage your own ${kind === "blog" ? "blog posts" : "newsroom articles"}.`}</p>
         </div>
-        <Link href="/dashboard/news/new" className="rounded bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary/90">
-          Write an article
+        <Link href={`/dashboard/${kind}/new`} className="rounded bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary/90">
+          {kind === "blog" ? "Write a post" : "Write an article"}
         </Link>
       </div>
       {items.length === 0 ? (
-        <p className="rounded border p-6 text-sm text-muted-foreground">No articles yet. Write your first newsroom article.</p>
+        <p className="rounded border p-6 text-sm text-muted-foreground">No {kind === "blog" ? "posts" : "articles"} yet. Write your first {kind === "blog" ? "blog post" : "news article"}.</p>
       ) : (
         <div className="space-y-3">
           {items.map((item) => (
@@ -97,24 +97,30 @@ export default function NewsManager() {
                   {item.approved ? "Published" : "Draft"}
                 </p>
                 <p className="mt-1 break-all text-xs text-muted-foreground">
-                  /media/news/{item.slug || item._id}
+                  {kind === "blog" ? "/blog/" : "/media/news/"}{item.slug || item._id}
                 </p>
               </div>
               <div className="flex shrink-0 flex-wrap gap-2">
                 {item.approved && (
-                  <Link href={`/media/news/${item.slug || item._id}`} target="_blank" rel="noopener noreferrer" className="rounded border px-3 py-2 text-sm hover:border-primary hover:text-primary">
+                  <Link href={kind === "blog" ? `/blog/${item.slug}` : `/media/news/${item.slug || item._id}`} target="_blank" rel="noopener noreferrer" className="rounded border px-3 py-2 text-sm hover:border-primary hover:text-primary">
                     View
                   </Link>
                 )}
-                <Link href={`/dashboard/news/${item._id}/edit`} className="rounded border px-3 py-2 text-sm hover:border-primary hover:text-primary">
-                  Edit
-                </Link>
-                <button type="button" onClick={() => void togglePublished(item)} className="rounded border px-3 py-2 text-sm hover:border-primary hover:text-primary">
-                  {item.approved ? "Unpublish" : "Publish"}
-                </button>
-                <button type="button" onClick={() => void deleteNews(item)} className="rounded border border-destructive px-3 py-2 text-sm text-destructive">
-                  Delete
-                </button>
+                {(isAdmin || item.postedBy?._id === user._id) && (
+                  <Link href={`/dashboard/${kind}/${item._id}/edit`} className="rounded border px-3 py-2 text-sm hover:border-primary hover:text-primary">
+                    Edit
+                  </Link>
+                )}
+                {(isAdmin || item.postedBy?._id === user._id) && <>
+                  <button type="button" onClick={() => void togglePublished(item)} className="rounded border px-3 py-2 text-sm hover:border-primary hover:text-primary">
+                    {item.approved ? "Unpublish" : "Publish"}
+                  </button>
+                </>}
+                {isAdmin && <>
+                  <button type="button" onClick={() => void deleteNews(item)} className="rounded border border-destructive px-3 py-2 text-sm text-destructive">
+                    Delete
+                  </button>
+                </>}
               </div>
             </article>
           ))}

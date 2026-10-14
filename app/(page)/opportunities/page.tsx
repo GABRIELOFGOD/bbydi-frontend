@@ -4,7 +4,8 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Grants & Opportunities",
-  description: "Open calls, fellowships, training cohorts and vacancies — one place people can be sent to, and come back to."
+  description: "Open calls, fellowships, training cohorts and vacancies — one place people can be sent to, and come back to.",
+  alternates: { canonical: "/opportunities" },
 };
 
 const Opportunities = () => {
