@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import BlogIndex from "@/components/blog/BlogIndex";
 import { fetchPublicApi, PublicContentItem } from "@/lib/publicContent";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Blog — Analysis, opinion and field notes",
   description: "Read analysis, opinion, field notes, explainers and commentary from Brain Builders Youth Development Initiative.",

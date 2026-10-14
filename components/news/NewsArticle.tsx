@@ -223,7 +223,7 @@ export default function NewsArticle({ id: slug, kind = "news", initialArticle }:
           </h1>
           {article.summary && <p className="mt-3 max-w-2xl text-sm leading-6 text-white/70">{article.summary}</p>}
           <p className="mt-4 text-[10px] font-bold uppercase tracking-widest text-white/50">
-            {[article.postedBy?.name, article.postedBy?.position, dateLabel, locationLabel].filter(Boolean).join(" · ")}
+            {[article.postedBy?.name || article.publisher, article.postedBy?.position || article.authorRole, article.readingTime, dateLabel, locationLabel].filter(Boolean).join(" · ")}
           </p>
         </div>
       </header>
@@ -231,7 +231,7 @@ export default function NewsArticle({ id: slug, kind = "news", initialArticle }:
       <main className="mx-auto w-full max-w-4xl px-4 pb-16 sm:px-6">
         {article.image && (
           <figure className="relative z-10 -mt-6 overflow-hidden rounded-sm bg-white shadow-sm">
-            <Image src={article.image} alt={article.imageCaption || article.title} width={1600} height={800} data-width={article.imageWidth ?? 100} data-align={article.imageAlignment ?? "center"} className="news-lead-image mx-auto block max-h-[30rem] max-w-full object-cover" />
+            <Image src={article.image} alt={article.imageAlt || article.imageCaption || article.title} width={1600} height={800} unoptimized data-width={article.imageWidth ?? 100} data-align={article.imageAlignment ?? "center"} className="news-lead-image mx-auto block max-h-[30rem] max-w-full object-cover" />
             {article.imageCaption && (
               <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent px-4 pb-3 pt-8 text-xs text-white">
                 {article.imageCaption}

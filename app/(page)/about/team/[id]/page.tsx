@@ -130,7 +130,7 @@ export default async function TeamMemberPage({ params }: PageProps) {
                     : kindPaths[post.kind] ?? "/about";
                 const summary = post.summary || post.description || "";
                 return (
-                  <Link key={post._id} href={href} className="group flex min-h-48 flex-col rounded-sm border bg-white p-5 transition-colors hover:border-primary/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
+                  <Link key={post._id} href={href} className="group flex min-h-48 flex-col rounded-sm border bg-white p-5 transition-colors hover:border-primary/60 focus-visible:outline-2 focus-visible:outline-primary">
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-[10px] font-extrabold uppercase tracking-widest text-primary">{post.category || post.kind}</span>
                       {post.featured && <span className="rounded-full bg-primary/10 px-2 py-1 text-[10px] font-bold text-primary">Featured</span>}

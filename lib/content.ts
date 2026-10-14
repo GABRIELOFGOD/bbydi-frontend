@@ -12,6 +12,7 @@ export interface ContentItem {
   status?: string;
   image?: string;
   imageCaption?: string;
+  imageAlt?: string;
   imageWidth?: number;
   imageAlignment?: "left" | "center" | "right";
   link?: string;
@@ -19,6 +20,11 @@ export interface ContentItem {
   type?: string;
   deadline?: string;
   publisher?: string;
+  authorRole?: string;
+  readingTime?: string;
+  wordCount?: number;
+  tags?: string[];
+  sourceUrl?: string;
   date?: string;
   createdAt?: string;
   document?: string;

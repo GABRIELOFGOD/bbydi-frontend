@@ -11,9 +11,16 @@ export type PublicContentItem = {
   featured?: boolean;
   image?: string;
   imageCaption?: string;
+  imageAlt?: string;
   date?: string;
   createdAt?: string;
   postedBy?: { _id?: string; name: string; position?: string };
+  publisher?: string;
+  authorRole?: string;
+  readingTime?: string;
+  wordCount?: number;
+  tags?: string[];
+  sourceUrl?: string;
   approved: boolean;
 };
 

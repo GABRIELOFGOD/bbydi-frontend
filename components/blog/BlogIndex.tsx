@@ -31,7 +31,7 @@ function BlogCard({ item, featured = false }: { item: ContentItem; featured?: bo
     <Link href={`/blog/${item.slug}`} className={`group overflow-hidden rounded-sm border bg-white transition-shadow hover:shadow-lg ${featured ? "grid md:grid-cols-2" : "flex flex-col"}`}>
       {item.image ? (
         <div className={`relative overflow-hidden bg-muted ${featured ? "min-h-64 md:min-h-80" : "aspect-[16/10]"}`}>
-          <Image src={item.image} alt={item.imageCaption || item.title} fill sizes={featured ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 100vw, 33vw"} className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+          <Image src={item.image} alt={item.imageAlt || item.imageCaption || item.title} fill unoptimized sizes={featured ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 100vw, 33vw"} className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
         </div>
       ) : (
         <div className={`flex items-center justify-center bg-[#f0ede8] text-primary ${featured ? "min-h-64 md:min-h-80" : "aspect-[16/10]"}`}>
@@ -43,10 +43,10 @@ function BlogCard({ item, featured = false }: { item: ContentItem; featured?: bo
         <h2 className={`mt-3 font-bold leading-tight text-foreground transition-colors group-hover:text-primary ${featured ? "text-2xl sm:text-3xl" : "text-lg"}`}>{item.title}</h2>
         <p className={`mt-3 text-sm leading-6 text-muted-foreground ${featured ? "line-clamp-4" : "line-clamp-3"}`}>{excerpt}</p>
         <div className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-muted-foreground">
-          {item.postedBy?.name && <span className="font-semibold text-foreground">{item.postedBy.name}</span>}
-          {item.postedBy?.position && <span>· {item.postedBy.position}</span>}
+          {(item.postedBy?.name || item.publisher) && <span className="font-semibold text-foreground">{item.postedBy?.name || item.publisher}</span>}
+          {(item.postedBy?.position || item.authorRole) && <span>· {item.postedBy?.position || item.authorRole}</span>}
           {dateFor(item) && <span>· {dateFor(item)}</span>}
-          <span>· {readTimeFor(item)}</span>
+          <span>· {item.readingTime || readTimeFor(item)}</span>
         </div>
         {featured && <span className="mt-6 text-xs font-bold uppercase tracking-wider text-primary">Read the story →</span>}
       </div>

@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: canonical,
       ...(article.image ? { images: [{ url: article.image, alt: article.imageCaption || article.title }] } : {}),
       ...(article.date || article.createdAt ? { publishedTime: article.date || article.createdAt } : {}),
-      ...(article.postedBy?.name ? { authors: [article.postedBy.name] } : {}),
+      ...((article.postedBy?.name || article.publisher) ? { authors: [article.postedBy?.name || article.publisher || ""] } : {}),
       ...(article.category ? { section: article.category } : {}),
     },
     twitter: {
@@ -48,7 +48,9 @@ export default async function NewsArticlePage({ params }: PageProps) {
     description: plainText(article.summary || article.description || ""),
     image: article.image,
     datePublished: article.date || article.createdAt,
-    author: article.postedBy ? { "@type": "Person", name: article.postedBy.name } : { "@type": "Organization", name: "Brain Builders Youth Development Initiative" },
+    author: article.postedBy || article.publisher
+      ? { "@type": "Person", name: article.postedBy?.name || article.publisher, jobTitle: article.postedBy?.position || article.authorRole }
+      : { "@type": "Organization", name: "Brain Builders Youth Development Initiative" },
     publisher: { "@type": "Organization", name: "Brain Builders Youth Development Initiative" },
     mainEntityOfPage: publicPageUrl(`/media/news/${encodeURIComponent(article.slug || slug)}`),
   };
