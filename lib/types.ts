@@ -13,7 +13,8 @@ export type ContentKind =
   | "opportunity"
   | "report"
   | "publication"
-  | "partner";
+  | "partner"
+  | "innovation";
 
 export interface ProjectCardTypes {
   id: string;
@@ -32,6 +33,7 @@ export interface NewTypes {
   title: string;
   content: string;
   publisher?: string;
+  publisherUser?: { _id?: string; name: string; position?: string; avatar?: string };
 }
 
 export interface PublicationType {

@@ -6,8 +6,12 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { apiRequest } from "@/lib/api";
 import { ContentItem } from "@/lib/content";
+import PageHeader from "../ui/PageHeader";
+import SectionTitle from "../ui/SectionTitle";
+import Divider from "../ui/Divider";
 
 const categories = ["All", "Analysis", "Opinion", "Field notes", "Explainers", "Commentary"];
+const POSTS_PER_PAGE = 12;
 
 const excerptFor = (item: ContentItem) =>
   (item.summary || item.description || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
@@ -27,6 +31,7 @@ const readTimeFor = (item: ContentItem) => {
 
 function BlogCard({ item, featured = false }: { item: ContentItem; featured?: boolean }) {
   const excerpt = excerptFor(item);
+  const publisher = item.publisherUser;
   return (
     <Link href={`/blog/${item.slug}`} className={`group overflow-hidden rounded-sm border bg-white transition-shadow hover:shadow-lg ${featured ? "grid md:grid-cols-2" : "flex flex-col"}`}>
       {item.image ? (
@@ -39,14 +44,29 @@ function BlogCard({ item, featured = false }: { item: ContentItem; featured?: bo
         </div>
       )}
       <div className={`flex flex-col ${featured ? "justify-center p-6 sm:p-10" : "flex-1 p-5"}`}>
-        <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">{item.category || "Blog"}</span>
+        <div className="w-full px-2 bg-primary/20 rounded-xs">
+          <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">{item.category || "Blog"}</span>
+        </div>
         <h2 className={`mt-3 font-bold leading-tight text-foreground transition-colors group-hover:text-primary ${featured ? "text-2xl sm:text-3xl" : "text-lg"}`}>{item.title}</h2>
         <p className={`mt-3 text-sm leading-6 text-muted-foreground ${featured ? "line-clamp-4" : "line-clamp-3"}`}>{excerpt}</p>
-        <div className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-muted-foreground">
-          {(item.postedBy?.name || item.publisher) && <span className="font-semibold text-foreground">{item.postedBy?.name || item.publisher}</span>}
-          {(item.postedBy?.position || item.authorRole) && <span>· {item.postedBy?.position || item.authorRole}</span>}
-          {dateFor(item) && <span>· {dateFor(item)}</span>}
-          <span>· {item.readingTime || readTimeFor(item)}</span>
+        <Divider className="mt-4" />
+        <div className="mt-5 flex flex-col gap-2 text-xs text-muted-foreground">
+          {publisher && (
+            <div className="flex items-center gap-2.5">
+              <div className="relative size-10 shrink-0 overflow-hidden rounded-full bg-muted">
+                {publisher.avatar
+                  ? <Image src={publisher.avatar} alt="" fill unoptimized sizes="40px" className="object-cover" />
+                  : <span className="flex size-full items-center justify-center font-bold text-foreground" aria-hidden="true">{publisher.name.charAt(0).toUpperCase()}</span>}
+              </div>
+              <div className="min-w-0">
+                <p className="font-semibold text-foreground">{publisher.name}</p>
+                <p>{[publisher.position, dateFor(item), item.readingTime || readTimeFor(item)].filter(Boolean).join(" · ")}</p>
+              </div>
+            </div>
+          )}
+          {!publisher && (
+            <p>{[dateFor(item), item.readingTime || readTimeFor(item)].filter(Boolean).join(" · ")}</p>
+          )}
         </div>
         {featured && <span className="mt-6 text-xs font-bold uppercase tracking-wider text-primary">Read the story →</span>}
       </div>
@@ -57,6 +77,7 @@ function BlogCard({ item, featured = false }: { item: ContentItem; featured?: bo
 export default function BlogIndex({ initialPosts = [] }: { initialPosts?: ContentItem[] }) {
   const [posts, setPosts] = useState<ContentItem[]>(initialPosts);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(initialPosts.length === 0);
 
   useEffect(() => {
@@ -75,39 +96,79 @@ export default function BlogIndex({ initialPosts = [] }: { initialPosts?: Conten
     () => posts.filter((post) => post._id !== featured?._id && (activeCategory === "All" || post.category?.toLowerCase() === activeCategory.toLowerCase())),
     [activeCategory, featured?._id, posts],
   );
+  const pageCount = Math.ceil(filtered.length / POSTS_PER_PAGE);
+  const visiblePage = Math.min(currentPage, Math.max(pageCount, 1));
+  const pagePosts = filtered.slice(
+    (visiblePage - 1) * POSTS_PER_PAGE,
+    visiblePage * POSTS_PER_PAGE,
+  );
 
   return (
     <main className="min-h-screen bg-[#faf9f7]">
-      <header className="bg-[#191919] px-5 py-14 text-white sm:py-20">
-        <div className="mx-auto max-w-6xl">
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary">Ideas, evidence &amp; perspectives</p>
-          <h1 className="mt-3 text-4xl font-extrabold tracking-tight sm:text-6xl">The BBYDI Blog</h1>
-          <p className="mt-4 max-w-2xl text-sm leading-7 text-white/70 sm:text-base">Analysis and stories from the people working for inclusive governance, youth empowerment and gender equality across Nigeria.</p>
-        </div>
-      </header>
+      <PageHeader
+        // topNote="Ideas, evidence & perspectives"
+        header="The BBYDI Blog"
+        page="Blog"
+        description="Analysis and stories from the people working for inclusive governance, youth empowerment and gender equality across Nigeria."
+      />
       <section className="mx-auto max-w-6xl px-5 py-10 sm:py-14">
         {loading ? <p className="py-16 text-center text-sm text-muted-foreground">Loading stories...</p> : posts.length === 0 ? (
           <p className="rounded-sm border bg-white p-8 text-center text-sm text-muted-foreground">There are no published blog posts yet. Please check back soon.</p>
         ) : (
           <>
-            {featured && <div className="mb-12">
-              <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Featured story</p>
+            {featured && <div className="mb-12 flex flex-col gap-5">
+              <SectionTitle title="Featured" />
               <BlogCard item={featured} featured />
             </div>}
             <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-              <h2 className="text-2xl font-bold">Latest stories</h2>
+              {/* <h2 className="text-2xl font-bold">Latest stories</h2> */}
               <div className="flex flex-wrap gap-2" aria-label="Filter blog stories by category">
                 {categories.map((category) => (
-                  <button key={category} type="button" aria-pressed={activeCategory === category} onClick={() => setActiveCategory(category)} className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${activeCategory === category ? "border-primary bg-primary text-white" : "border-gray-300 bg-white text-foreground hover:border-primary hover:text-primary"}`}>
+                  <button key={category} type="button" aria-pressed={activeCategory === category} onClick={() => { setActiveCategory(category); setCurrentPage(1); }} className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${activeCategory === category ? "border-primary bg-primary text-white" : "border-gray-300 bg-white text-foreground hover:border-primary hover:text-primary"}`}>
                     {category}
                   </button>
                 ))}
               </div>
             </div>
             {filtered.length === 0 ? <p className="rounded-sm border bg-white p-8 text-center text-sm text-muted-foreground">No stories in this category yet.</p> : (
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {filtered.map((post) => <BlogCard key={post._id} item={post} />)}
-              </div>
+              <>
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {pagePosts.map((post) => <BlogCard key={post._id} item={post} />)}
+                </div>
+                {pageCount > 1 && (
+                  <nav
+                    className="mt-8 flex flex-wrap items-center justify-between gap-4"
+                    aria-label="Blog pages"
+                  >
+                    <p className="text-sm text-muted-foreground" aria-live="polite">
+                      Showing {(visiblePage - 1) * POSTS_PER_PAGE + 1}–
+                      {Math.min(visiblePage * POSTS_PER_PAGE, filtered.length)} of{" "}
+                      {filtered.length} stories
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                        disabled={visiblePage === 1}
+                        className="rounded-sm border bg-white px-3 py-2 text-sm font-semibold text-foreground hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        Previous
+                      </button>
+                      <span className="px-2 text-sm text-muted-foreground" aria-current="page">
+                        Page {visiblePage} of {pageCount}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setCurrentPage((page) => Math.min(pageCount, page + 1))}
+                        disabled={visiblePage === pageCount}
+                        className="rounded-sm border bg-white px-3 py-2 text-sm font-semibold text-foreground hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </nav>
+                )}
+              </>
             )}
           </>
         )}

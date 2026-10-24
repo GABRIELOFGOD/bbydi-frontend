@@ -5,6 +5,7 @@ import CurrentProjects from "../../components/home/CurrentProjects";
 import TheProblem from "@/components/home/TheProblem";
 import NewsRoom from "@/components/home/NewsRoom";
 import Partners from "../../components/home/Partners";
+import StoriesOfChange from "@/components/home/StoriesOfChange";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -22,6 +23,7 @@ export default function Home() {
       <CurrentProjects />
       <TheProblem />
       <NewsRoom />
+      <StoriesOfChange />
       <Partners />
     </div>
 

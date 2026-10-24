@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const article = await getNewsArticle(slug);
   if (!article) return { title: "News article not found", robots: { index: false, follow: false } };
   const description = plainText(article.summary || article.description || "").slice(0, 300);
-  const canonical = `/media/news/${encodeURIComponent(article.slug || slug)}`;
+  const canonical = `/news/${encodeURIComponent(article.slug || slug)}`;
   return {
     title: article.title,
     description,
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: canonical,
       ...(article.image ? { images: [{ url: article.image, alt: article.imageCaption || article.title }] } : {}),
       ...(article.date || article.createdAt ? { publishedTime: article.date || article.createdAt } : {}),
-      ...((article.postedBy?.name || article.publisher) ? { authors: [article.postedBy?.name || article.publisher || ""] } : {}),
+      ...((article.publisherUser?.name || article.publisher) ? { authors: [article.publisherUser?.name || article.publisher || ""] } : {}),
       ...(article.category ? { section: article.category } : {}),
     },
     twitter: {
@@ -48,11 +48,11 @@ export default async function NewsArticlePage({ params }: PageProps) {
     description: plainText(article.summary || article.description || ""),
     image: article.image,
     datePublished: article.date || article.createdAt,
-    author: article.postedBy || article.publisher
-      ? { "@type": "Person", name: article.postedBy?.name || article.publisher, jobTitle: article.postedBy?.position || article.authorRole }
+    author: article.publisherUser || article.publisher
+      ? { "@type": "Person", name: article.publisherUser?.name || article.publisher, jobTitle: article.publisherUser?.position || article.authorRole }
       : { "@type": "Organization", name: "Brain Builders Youth Development Initiative" },
     publisher: { "@type": "Organization", name: "Brain Builders Youth Development Initiative" },
-    mainEntityOfPage: publicPageUrl(`/media/news/${encodeURIComponent(article.slug || slug)}`),
+    mainEntityOfPage: publicPageUrl(`/news/${encodeURIComponent(article.slug || slug)}`),
   };
   return (
     <>

@@ -7,7 +7,8 @@ const staticPaths = [
   "/about",
   "/accessibility",
   "/blog",
-  "/media",
+  "/news",
+  "/publications",
   "/opportunities",
   "/our-expertise",
   "/partner-with-us",
@@ -19,10 +20,12 @@ type SitemapEntry = { loc: string; lastmod?: string };
 
 export async function GET() {
   const origin = new URL(publicPageUrl("/")).origin;
-  const [staffResult, blogResult, newsResult] = await Promise.allSettled([
+  const [staffResult, blogResult, newsResult, publicationResult, reportResult] = await Promise.allSettled([
     fetchPublicApi<PublicStaffProfile[]>("/staff/profiles"),
     fetchPublicApi<PublicContentItem[]>("/content/blog"),
     fetchPublicApi<PublicContentItem[]>("/content/news"),
+    fetchPublicApi<PublicContentItem[]>("/content/publication"),
+    fetchPublicApi<PublicContentItem[]>("/content/report"),
   ]);
   const dynamicEntries: SitemapEntry[] = [];
 
@@ -38,12 +41,26 @@ export async function GET() {
       console.error(`Could not include ${kind} content in sitemap`, result.reason);
       continue;
     }
+    for (const [kind, result] of [["publication", publicationResult], ["report", reportResult]] as const) {
+      if (result.status !== "fulfilled") {
+        console.error(`Could not include ${kind} content in sitemap`, result.reason);
+        continue;
+      }
+      for (const item of result.value ?? []) {
+        if (!item.slug) continue;
+        const lastmod = item.date || item.createdAt;
+        dynamicEntries.push({
+          loc: `${origin}/publications/${encodeURIComponent(item.slug)}`,
+          ...(lastmod && !Number.isNaN(new Date(lastmod).getTime()) ? { lastmod: new Date(lastmod).toISOString() } : {}),
+        });
+      }
+    }
     for (const item of result.value ?? []) {
       const slug = item.slug || (kind === "news" ? item._id : undefined);
       if (!slug) continue;
       const loc = kind === "blog"
         ? `${origin}/blog/${encodeURIComponent(slug)}`
-        : `${origin}/media/news/${encodeURIComponent(slug)}`;
+        : `${origin}/news/${encodeURIComponent(slug)}`;
       const lastmod = item.date || item.createdAt;
       dynamicEntries.push({
         loc,

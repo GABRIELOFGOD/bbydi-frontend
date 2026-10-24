@@ -75,6 +75,14 @@ export default function NewsShareButtons({ title }: { title: string }) {
         X
       </a>
       <a
+        href={`https://wa.me/?text=${encodedTitle}%20${encodedUrl}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="rounded border px-3 py-2 text-sm font-semibold hover:border-primary hover:text-primary"
+      >
+        WhatsApp
+      </a>
+      <a
         href={`mailto:?subject=${encodedTitle}&body=${encodedUrl}`}
         className="inline-flex items-center gap-2 rounded border px-3 py-2 text-sm font-semibold hover:border-primary hover:text-primary"
       >

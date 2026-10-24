@@ -3,6 +3,7 @@ import Container from "../Container";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import CountUpCard from "../ui/CountUpCard";
+import Link from "next/link";
 
 const Hero = () => {
   return (
@@ -23,7 +24,7 @@ const Hero = () => {
               <p className="text-secondary/80 uppercase text-xs px-4 py-2 font-bold">Youth-led · Women-led · Since 2014</p>
             </div>
             <h1
-              className="text-3xl font-extrabold md:text-[51.58px] leading-[1.15] tracking-[-0.025em]"
+              className="text-3xl font-extrabold md:text-[51.58px] leading-[1.15] tracking-tight"
             >
               Building the civic power of Nigeria&apos;s <span className="text-secondary">young people</span>.
             </h1>
@@ -31,8 +32,8 @@ const Hero = () => {
             <p className="md:text-[21px] text-base text-muted/80">BBYDI is a non-partisan, not-for-profit organisation advancing inclusive governance, youth empowerment and gender equality — with evidence, at scale, from the grassroots up.</p>
 
             <div className="flex gap-5 flex-col md:flex-row">
-              <Button className={cn("text-primary w-fit hover:bg-white bg-white border-2 border-white rounded p-6 font-bold")}>Explore our work</Button>
-              <Button className={cn("text-white hover:bg-white/10 w-fit bg-white/10 border-2 border-gray-500 rounded p-6 font-bold")}>Open opportunities</Button>
+              <Link href="/programs"><Button className={cn("text-primary w-fit hover:bg-white bg-white border-2 border-white rounded p-6 font-bold")}>Explore our work</Button></Link>
+              <Link href="/opportunities"><Button className={cn("text-white hover:bg-white/10 w-fit bg-white/10 border-2 border-gray-500 rounded p-6 font-bold")}>Open opportunities</Button></Link>
             </div>
           </div>
           <div className="w-full border-b border-gray-600" />

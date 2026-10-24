@@ -4,7 +4,7 @@ import Link from "next/link";
 import { SidebarContent, SidebarGroup, SidebarGroupLabel } from "./sidebar";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { CalendarsIcon, CheckCheckIcon, ClipboardMinusIcon, FolderKanbanIcon, HandshakeIcon, LayoutDashboardIcon, NewspaperIcon, ProportionsIcon, UserRoundPenIcon, UsersIcon, WifiPenIcon } from "lucide-react";
+import { AtomIcon, CalendarsIcon, CheckCheckIcon, ClipboardMinusIcon, FolderKanbanIcon, HandshakeIcon, LayoutDashboardIcon, NewspaperIcon, ProportionsIcon, UserRoundPenIcon, UsersIcon, WifiPenIcon } from "lucide-react";
 
 const DashboardSidebarItems = () => {
   const path = usePathname()
@@ -56,7 +56,7 @@ const CONTENT_ITEMS = [
     icon: <NewspaperIcon size={16} />
   },
   {
-    id: 7,
+    id: 8,
     item: "Blog",
     path: "/dashboard/blog",
     icon: <NewspaperIcon size={16} />
@@ -84,6 +84,12 @@ const CONTENT_ITEMS = [
     item: "Partners",
     path: "/dashboard/partners",
     icon: <HandshakeIcon size={16} />
+  },
+  {
+    id: 9,
+    item: "Innovation & technology",
+    path: "/dashboard/innovations",
+    icon: <AtomIcon size={16} />
   }
 ];
 

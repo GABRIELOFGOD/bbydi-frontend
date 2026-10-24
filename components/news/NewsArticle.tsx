@@ -192,7 +192,7 @@ export default function NewsArticle({ id: slug, kind = "news", initialArticle }:
     return (
       <main className="mx-auto min-h-[50vh] max-w-4xl px-5 py-16">
         <p className="rounded border p-5 text-sm text-muted-foreground">{error || "Article not found"}</p>
-        <Link href={kind === "blog" ? "/blog" : "/media#news"} className="mt-5 inline-block font-semibold text-primary hover:underline">Back to {kind === "blog" ? "blog" : "newsroom"}</Link>
+        <Link href={kind === "blog" ? "/blog" : "/news"} className="mt-5 inline-block font-semibold text-primary hover:underline">Back to {kind === "blog" ? "blog" : "newsroom"}</Link>
       </main>
     );
   }
@@ -202,6 +202,7 @@ export default function NewsArticle({ id: slug, kind = "news", initialArticle }:
     ? publishedDate.toLocaleDateString("en-NG", { year: "numeric", timeZone: "UTC" })
     : "";
   const locationLabel = article.location?.toUpperCase();
+  const publisher = article.publisherUser;
 
   return (
     <>
@@ -210,7 +211,7 @@ export default function NewsArticle({ id: slug, kind = "news", initialArticle }:
           <p className="mb-5 text-xs text-white/50">
             <Link href="/" className="hover:text-white">Home</Link>
             {" / "}
-            <Link href={kind === "blog" ? "/blog" : "/media#news"} className="hover:text-white">{kind === "blog" ? "Blog" : "Media &amp; Publications"}</Link>
+            <Link href={kind === "blog" ? "/blog" : "/news"} className="hover:text-white">{kind === "blog" ? "Blog" : "News"}</Link>
             {article.category && ` / ${article.category}`}
           </p>
           {article.category && (
@@ -222,32 +223,46 @@ export default function NewsArticle({ id: slug, kind = "news", initialArticle }:
             {article.title}
           </h1>
           {article.summary && <p className="mt-3 max-w-2xl text-sm leading-6 text-white/70">{article.summary}</p>}
-          <p className="mt-4 text-[10px] font-bold uppercase tracking-widest text-white/50">
-            {[article.postedBy?.name || article.publisher, article.postedBy?.position || article.authorRole, article.readingTime, dateLabel, locationLabel].filter(Boolean).join(" · ")}
-          </p>
+          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 text-sm text-white/70">
+            {publisher && (
+              <div className="flex items-center gap-3">
+                <div className="relative size-11 shrink-0 overflow-hidden rounded-full bg-white/15">
+                  {publisher.avatar
+                    ? <Image src={publisher.avatar} alt="" fill unoptimized sizes="44px" className="object-cover" />
+                    : <span className="flex size-full items-center justify-center font-bold text-white" aria-hidden="true">{publisher.name.charAt(0).toUpperCase()}</span>}
+                </div>
+                <div>
+                  <p className="font-semibold text-white">{publisher.name}</p>
+                  {publisher.position && <p>{publisher.position}</p>}
+                </div>
+              </div>
+            )}
+            <p>{[article.readingTime, dateLabel, locationLabel].filter(Boolean).join(" · ")}</p>
+          </div>
+          {!publisher && article.publisher && <p className="mt-4 text-sm text-white/70">{article.publisher}</p>}
         </div>
       </header>
 
       <main className="mx-auto w-full max-w-4xl px-4 pb-16 sm:px-6">
         {article.image && (
           <figure className="relative z-10 -mt-6 overflow-hidden rounded-sm bg-white shadow-sm">
-            <Image src={article.image} alt={article.imageAlt || article.imageCaption || article.title} width={1600} height={800} unoptimized data-width={article.imageWidth ?? 100} data-align={article.imageAlignment ?? "center"} className="news-lead-image mx-auto block max-h-[30rem] max-w-full object-cover" />
+            <Image src={article.image} alt={article.imageAlt || article.imageCaption || article.title} width={1600} height={800} unoptimized data-width={article.imageWidth ?? 100} data-align={article.imageAlignment ?? "center"} className="news-lead-image mx-auto block max-h-120 max-w-full object-cover" />
             {article.imageCaption && (
-              <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent px-4 pb-3 pt-8 text-xs text-white">
+              <figcaption className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/75 to-transparent px-4 pb-3 pt-8 text-xs text-white">
                 {article.imageCaption}
               </figcaption>
             )}
           </figure>
         )}
 
-        <article className="mx-auto mt-10 max-w-[35rem]">
+        <article className="mx-auto mt-10 max-w-180">
           <ArticleAudioPlayer title={article.title} html={article.description ?? ""} />
           <SafeHtml html={article.description ?? ""} className="news-rich-content news-article-body" />
           <div className="mt-10 border-t pt-5">
             <NewsShareButtons title={article.title} />
           </div>
           <div className="mt-6 flex flex-wrap gap-3 border-t pt-5">
-            <Link href={kind === "blog" ? "/blog" : "/media#news"} className="rounded-sm border border-primary px-4 py-2.5 text-xs font-bold text-primary hover:bg-primary/5">
+            <Link href={kind === "blog" ? "/blog" : "/news"} className="rounded-sm border border-primary px-4 py-2.5 text-xs font-bold text-primary hover:bg-primary/5">
               ← All {kind === "blog" ? "blog posts" : "news"}
             </Link>
             <Link href="/partner-with-us" className="rounded-sm bg-primary px-4 py-2.5 text-xs font-bold text-white hover:bg-primary/90">
@@ -266,7 +281,7 @@ export default function NewsArticle({ id: slug, kind = "news", initialArticle }:
               {related.map((item) => (
                 <Link
                   key={item._id}
-                  href={kind === "blog" ? `/blog/${item.slug}` : `/media/news/${item.slug || item._id}`}
+                  href={kind === "blog" ? `/blog/${item.slug}` : `/news/${item.slug || item._id}`}
                   className="group flex min-h-56 flex-col rounded-sm border bg-white p-5 transition-colors hover:border-primary/50"
                 >
                   <span className="text-xs font-extrabold tracking-wide text-primary">{item.category || "News"}</span>

@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: canonical,
       ...(post.image ? { images: [{ url: post.image, alt: post.imageCaption || post.title }] } : {}),
       ...(post.date || post.createdAt ? { publishedTime: post.date || post.createdAt } : {}),
-      ...((post.postedBy?.name || post.publisher) ? { authors: [post.postedBy?.name || post.publisher || ""] } : {}),
+      ...((post.publisherUser?.name || post.publisher) ? { authors: [post.publisherUser?.name || post.publisher || ""] } : {}),
       ...(post.category ? { section: post.category } : {}),
     },
     twitter: {
@@ -49,8 +49,8 @@ export default async function BlogPostPage({ params }: PageProps) {
     description: plainText(post.summary || post.description || ""),
     image: post.image,
     datePublished: post.date || post.createdAt,
-    author: post.postedBy || post.publisher
-      ? { "@type": "Person", name: post.postedBy?.name || post.publisher, jobTitle: post.postedBy?.position || post.authorRole }
+    author: post.publisherUser || post.publisher
+      ? { "@type": "Person", name: post.publisherUser?.name || post.publisher, jobTitle: post.publisherUser?.position || post.authorRole }
       : { "@type": "Organization", name: "Brain Builders Youth Development Initiative" },
     publisher: { "@type": "Organization", name: "Brain Builders Youth Development Initiative" },
     mainEntityOfPage: publicPageUrl(`/blog/${encodeURIComponent(post.slug || slug)}`),

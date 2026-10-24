@@ -3,7 +3,7 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { apiRequest } from "@/lib/api";
-import { ContentItem } from "@/lib/content";
+import { ContentItem, StaffAccount } from "@/lib/content";
 import { ContentKind } from "@/lib/types";
 import { useUser } from "@/providers/userProvider";
 
@@ -16,10 +16,12 @@ type FormValues = {
   title: string;
   description: string;
   category: string;
+  theme: string;
+  language: string;
+  series: string;
   context: string;
   summary: string;
   status: string;
-  publisher: string;
   date: string;
   type: string;
   location: string;
@@ -32,10 +34,12 @@ const emptyForm: FormValues = {
   title: "",
   description: "",
   category: "",
+  theme: "",
+  language: "",
+  series: "",
   context: "",
   summary: "",
   status: "",
-  publisher: "",
   date: "",
   type: "",
   location: "",
@@ -47,22 +51,25 @@ const emptyForm: FormValues = {
 const kindFields: Record<ContentKind, (keyof FormValues)[]> = {
   program: ["category", "description"],
   project: ["category", "status", "context", "summary"],
-  news: ["description", "publisher", "date"],
-  blog: ["category", "description", "publisher", "date"],
+  news: ["description", "date"],
+  blog: ["category", "description", "date"],
   opportunity: ["description", "status", "type", "location", "deadline", "link"],
   report: ["category", "description", "date"],
-  publication: ["category", "description", "date"],
+  publication: ["category", "theme", "series", "language", "description", "date"],
   partner: ["description", "link"],
+  innovation: ["description", "type", "link"],
 };
 
 const fieldLabels: Record<keyof FormValues, string> = {
   title: "Title / name",
   description: "Description",
   category: "Category",
+  theme: "Theme",
+  language: "Language",
+  series: "Series",
   context: "Project context",
   summary: "Outcome / supporting detail",
   status: "Status",
-  publisher: "Publisher",
   date: "Date",
   type: "Type",
   location: "Location",
@@ -77,6 +84,8 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
   const { user } = useUser();
   const isAdmin = user?.role === "admin";
   const [items, setItems] = useState<ContentItem[]>([]);
+  const [staffAccounts, setStaffAccounts] = useState<StaffAccount[]>([]);
+  const [publisherId, setPublisherId] = useState("");
   const [form, setForm] = useState<FormValues>(emptyForm);
   const [image, setImage] = useState<File | null>(null);
   const [document, setDocument] = useState<File | null>(null);
@@ -106,8 +115,22 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
     return () => { active = false; };
   }, [kind, title]);
 
+  useEffect(() => {
+    if (!isAdmin) return;
+    let active = true;
+    void apiRequest<{ data: StaffAccount[] }>("/staff/accounts/all")
+      .then((result) => {
+        if (active) setStaffAccounts(result.data.filter((account) => !account.isBlocked));
+      })
+      .catch((error: unknown) => {
+        if (active) toast.error(error instanceof Error ? error.message : "Could not load staff accounts");
+      });
+    return () => { active = false; };
+  }, [isAdmin]);
+
   const resetForm = () => {
     setForm(emptyForm);
+    setPublisherId("");
     setImage(null);
     setDocument(null);
     setEditing(null);
@@ -115,14 +138,17 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
 
   const editItem = (item: ContentItem) => {
     setEditing(item);
+    setPublisherId(item.publisherUser?._id ?? item.postedBy?._id ?? user?._id ?? "");
     setForm({
       title: item.title,
       description: item.description ?? "",
       category: item.category ?? "",
+      theme: item.theme ?? "",
+      language: item.language ?? "",
+      series: item.series ?? "",
       context: item.context ?? "",
       summary: item.summary ?? "",
       status: item.status ?? "",
-      publisher: item.publisher ?? "",
       date: item.date?.slice(0, 10) ?? "",
       type: item.type ?? "",
       location: item.location ?? "",
@@ -140,6 +166,8 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
 
     const body = new FormData();
     Object.entries(form).forEach(([key, value]) => body.append(key, value));
+    const selectedPublisherId = publisherId || (editing ? editing.postedBy?._id : "");
+    if (isAdmin && selectedPublisherId) body.append("publisherId", selectedPublisherId);
     if (image) body.append("image", image);
     if (document) body.append("document", document);
 
@@ -209,6 +237,7 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
                     <p className={`mt-2 text-xs font-semibold ${item.approved ? "text-green-700" : "text-amber-700"}`}>
                       {item.approved ? "Published" : "Awaiting approval"}
                     </p>
+                    {isAdmin && <p className="mt-1 text-xs text-muted-foreground">Posted by {item.postedBy?.name ?? "Uploader account unavailable"}</p>}
                     {item.featured && <p className="mt-1 text-xs font-semibold text-primary">Featured on author profile</p>}
                   </div>
                   {(isAdmin || item.postedBy?._id === user?._id) && (
@@ -236,7 +265,13 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
         <form onSubmit={submit} className="space-y-4">
           {(["title", ...kindFields[kind]] as (keyof FormValues)[]).map((field) => (
             <label key={field} className="block space-y-1.5 text-sm font-medium">
-              <span>{fieldLabels[field]}</span>
+              <span>
+                {kind === "publication" && field === "category"
+                  ? "Resource type"
+                  : kind === "innovation" && field === "type"
+                    ? "Status / link label"
+                    : fieldLabels[field]}
+              </span>
               {field === "status" && kind === "opportunity" ? (
                 <select value={form[field]} onChange={(event) => setForm((prev) => ({ ...prev, [field]: event.target.value }))} className="h-10 w-full rounded border px-3">
                   <option value="">Select status</option>
@@ -257,6 +292,19 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
               )}
             </label>
           ))}
+          {isAdmin && (
+            <label className="block space-y-1.5 text-sm font-medium">
+              <span>Publisher</span>
+              <select value={publisherId} onChange={(event) => setPublisherId(event.target.value)} className="h-10 w-full rounded border px-3">
+                <option value="">Same as poster</option>
+                {user?._id && <option value={user._id}>{user.name} (you)</option>}
+                {staffAccounts.map((account) => (
+                  <option key={account._id} value={account._id}>{account.name}{account.position ? ` — ${account.position}` : ""}</option>
+                ))}
+              </select>
+              <span className="block text-xs font-normal text-muted-foreground">The publisher is shown to readers. The original poster is tracked separately.</span>
+            </label>
+          )}
           {isAdmin && (
             <label className="flex items-center gap-2 text-sm font-medium">
               <input

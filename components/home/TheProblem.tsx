@@ -3,6 +3,7 @@ import Container from "../Container";
 import { Button } from "../ui/button";
 import ColumnTitle from "../ui/ColumnTitle";
 import SectionTitle from "../ui/SectionTitle";
+import Link from "next/link";
 
 const TheProblem = () => {
   const data = [
@@ -30,7 +31,9 @@ const TheProblem = () => {
           <SectionTitle showLine={false} title="The problem we exist for" />
           <ColumnTitle text="Nigeria ranks 180th out of 185 countries on women's parliamentary representation." className="text-white" />
           <p className="text-lg">Nearly half the population. 4.4% of elected positions. Fifteen states have not a single woman in their state legislature — not underrepresentation, zero.</p>
-          <Button className={cn("bg-white text-primary font-bold p-5 rounded w-fit")}>How Space for Her answers it</Button>
+          <Link href="/projects">
+            <Button className={cn("bg-white hover:bg-white/80 text-primary font-bold p-5 rounded w-fit")}>How Space for Her answers it</Button>
+          </Link>
         </div>
 
         <div className="flex flex-col gap-3">

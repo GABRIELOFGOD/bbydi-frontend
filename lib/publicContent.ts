@@ -8,19 +8,25 @@ export type PublicContentItem = {
   description?: string;
   summary?: string;
   category?: string;
+  theme?: string;
+  language?: string;
+  series?: string;
+  type?: string;
   featured?: boolean;
   image?: string;
   imageCaption?: string;
   imageAlt?: string;
   date?: string;
   createdAt?: string;
-  postedBy?: { _id?: string; name: string; position?: string };
+  publisherUser?: { _id?: string; name: string; position?: string; avatar?: string };
   publisher?: string;
   authorRole?: string;
   readingTime?: string;
   wordCount?: number;
   tags?: string[];
   sourceUrl?: string;
+  document?: string;
+  link?: string;
   approved: boolean;
 };
 

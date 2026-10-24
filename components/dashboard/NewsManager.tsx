@@ -96,13 +96,14 @@ export default function NewsManager({ kind = "news" }: { kind?: "news" | "blog" 
                 <p className={`mt-2 text-xs font-semibold ${item.approved ? "text-green-700" : "text-amber-700"}`}>
                   {item.approved ? "Published" : "Draft"}
                 </p>
+                {isAdmin && <p className="mt-1 text-xs text-muted-foreground">Posted by {item.postedBy?.name ?? "Uploader account unavailable"}</p>}
                 <p className="mt-1 break-all text-xs text-muted-foreground">
-                  {kind === "blog" ? "/blog/" : "/media/news/"}{item.slug || item._id}
+                  {kind === "blog" ? "/blog/" : "/news/"}{item.slug || item._id}
                 </p>
               </div>
               <div className="flex shrink-0 flex-wrap gap-2">
                 {item.approved && (
-                  <Link href={kind === "blog" ? `/blog/${item.slug}` : `/media/news/${item.slug || item._id}`} target="_blank" rel="noopener noreferrer" className="rounded border px-3 py-2 text-sm hover:border-primary hover:text-primary">
+                  <Link href={kind === "blog" ? `/blog/${item.slug}` : `/news/${item.slug || item._id}`} target="_blank" rel="noopener noreferrer" className="rounded border px-3 py-2 text-sm hover:border-primary hover:text-primary">
                     View
                   </Link>
                 )}

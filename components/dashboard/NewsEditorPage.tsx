@@ -17,13 +17,15 @@ type NewsEditorPageProps = { newsId?: string; kind?: "news" | "blog" };
 export default function NewsEditorPage({ newsId, kind = "news" }: NewsEditorPageProps) {
   const contentName = kind === "blog" ? "blog post" : "news article";
   const dashboardPath = `/dashboard/${kind}`;
-  const publicPath = kind === "blog" ? "/blog" : "/media/news";
+  const publicPath = kind === "blog" ? "/blog" : "/news";
   const router = useRouter();
   const { user, loading: userLoading } = useUser();
   const editorRef = useRef<NewsRichTextEditorHandle>(null);
   const coverPreviewUrl = useRef("");
   const [title, setTitle] = useState("");
   const [posterId, setPosterId] = useState("");
+  const [posterName, setPosterName] = useState("");
+  const [publisherId, setPublisherId] = useState("");
   const [staffAccounts, setStaffAccounts] = useState<StaffAccount[]>([]);
   const [date, setDate] = useState("");
   const [category, setCategory] = useState("");
@@ -62,6 +64,8 @@ export default function NewsEditorPage({ newsId, kind = "news" }: NewsEditorPage
         if (!active) return;
         setTitle(item.title);
         setPosterId(item.postedBy?._id ?? "");
+        setPosterName(item.postedBy?.name ?? "");
+        setPublisherId(item.publisherUser?._id ?? item.postedBy?._id ?? "");
         setDate(item.date?.slice(0, 10) ?? "");
         setCategory(item.category ?? "");
         setSummary(item.summary ?? "");
@@ -134,7 +138,9 @@ export default function NewsEditorPage({ newsId, kind = "news" }: NewsEditorPage
           imageCaption: imageCaption.trim(),
           imageWidth,
           imageAlignment,
-          ...(isAdmin ? { posterId: posterId || user?._id } : {}),
+          ...(isAdmin && (publisherId || newsId)
+            ? { publisherId: publisherId || posterId || user?._id }
+            : {}),
           approved: publish,
           ...(isAdmin ? { featured } : {}),
         },
@@ -226,16 +232,22 @@ export default function NewsEditorPage({ newsId, kind = "news" }: NewsEditorPage
             <input value={title} onChange={(event) => setTitle(event.target.value)} maxLength={200} required className="h-12 w-full rounded border px-3 text-base" placeholder="Give your story a clear headline" />
           </label>
           <div className="grid gap-4 sm:grid-cols-2">
-            <label className="block space-y-1.5 text-sm font-semibold">
-              <span>{isAdmin ? "Posted by" : "Your byline"}</span>
-              {isAdmin ? <select value={posterId || user._id || ""} onChange={(event) => setPosterId(event.target.value)} className="h-10 w-full rounded border px-3">
+            {isAdmin && <label className="block space-y-1.5 text-sm font-semibold">
+              <span>Poster (accountability)</span>
+              <span className="block rounded border px-3 py-2 font-normal">{newsId ? posterName || "Uploader account unavailable" : user.name}</span>
+              <span className="block text-xs font-normal text-muted-foreground">The authenticated account that uploads this content is recorded as poster and cannot be changed.</span>
+            </label>}
+            {isAdmin && <label className="block space-y-1.5 text-sm font-semibold">
+              <span>Publisher</span>
+              <select value={publisherId} onChange={(event) => setPublisherId(event.target.value)} className="h-10 w-full rounded border px-3">
+                <option value="">Same as poster</option>
                 {user?._id && <option value={user._id}>{user.name} (you)</option>}
                 {staffAccounts.map((staff) => (
                   <option key={staff._id} value={staff._id}>{staff.name}{staff.position ? ` — ${staff.position}` : ""}</option>
                 ))}
-              </select> : <span className="block rounded border px-3 py-2">{user.name}</span>}
-              <span className="block text-xs font-normal text-muted-foreground">{isAdmin ? "Choose an author for this article." : "This article will be published under your account."}</span>
-            </label>
+              </select>
+              <span className="block text-xs font-normal text-muted-foreground">Readers see the publisher identity; the person who posted this is still recorded separately.</span>
+            </label>}
             <label className="block space-y-1.5 text-sm font-semibold">
               <span>Publication date</span>
               <input type="date" value={date} onChange={(event) => setDate(event.target.value)} className="h-10 w-full rounded border px-3" />

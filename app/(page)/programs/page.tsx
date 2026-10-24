@@ -1,4 +1,5 @@
 import ProgramsList from "@/components/programs/ProgramsList";
+import InnovationsSection from "@/components/programs/InnovationsSection";
 import PageHeader from "@/components/ui/PageHeader";
 import { Metadata } from "next";
 
@@ -18,6 +19,7 @@ const ProgramsPage = () => {
       />
 
       <ProgramsList />
+      <InnovationsSection />
     </div>
   )
 }

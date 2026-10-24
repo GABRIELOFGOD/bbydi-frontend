@@ -28,8 +28,12 @@ export const NavItemsList = [
     path: "/blog"
   },
   {
-    label: "media & publications",
-    path: "/media"
+    label: "Publications",
+    path: "/publications"
+  },
+  {
+    label: "Newsroom",
+    path: "/news"
   },
   {
     label: "opportunities",
@@ -542,7 +546,7 @@ export const Organisation = [
   {
     id: "3",
     text: "Annual reports",
-    path: "/media"
+    path: "/publications"
   },
   {
     id: "4",
@@ -565,12 +569,12 @@ export const Work = [
   {
     id: "3",
     text: "Publications",
-    path: "/media#publications"
+    path: "/publications"
   },
   {
     id: "4",
     text: "Newsroom",
-    path: "/media#news"
+    path: "/news"
   },
   {
     id: "5",

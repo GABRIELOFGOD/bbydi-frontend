@@ -27,7 +27,7 @@ const Program = () => {
         <ColumnTitle text="Seven domains where we work" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-10">
           {programs.map((program) => (
-            <Link className="hover:border border-primary hover:-top-0.5 duration-300 hover:shadow-sm" href={`/programs/${program.project}`} key={program.sn}>
+            <Link className="hover:border border-primary hover:-top-0.5 duration-300 hover:shadow-sm" href={`/programs?category=${program.project}`} key={program.sn}>
               <Card numberOfCards={program.sn} title={program.title} description={program.description} cta={{ text: "explore" }} />
             </Link>
           ))}

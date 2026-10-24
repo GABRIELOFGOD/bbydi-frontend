@@ -7,11 +7,11 @@ import { fetchPublicApi, plainText, publicPageUrl, PublicStaffProfileResponse } 
 const kindPaths: Record<string, string> = {
   program: "/programs",
   project: "/projects",
-  news: "/media/news",
+  news: "/news",
   blog: "/blog",
   opportunity: "/opportunities",
-  report: "/media",
-  publication: "/media",
+  report: "/publications",
+  publication: "/publications",
   partner: "/partner-with-us",
 };
 
@@ -124,7 +124,7 @@ export default async function TeamMemberPage({ params }: PageProps) {
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {posts.map((post) => {
                 const href = post.kind === "news"
-                  ? `/media/news/${post.slug || post._id}`
+                  ? `/news/${post.slug || post._id}`
                   : post.kind === "blog"
                     ? `/blog/${post.slug}`
                     : kindPaths[post.kind] ?? "/about";

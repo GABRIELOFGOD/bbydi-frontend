@@ -9,6 +9,9 @@ export interface ContentItem {
   context?: string;
   summary?: string;
   category?: string;
+  theme?: string;
+  language?: string;
+  series?: string;
   status?: string;
   image?: string;
   imageCaption?: string;
@@ -30,7 +33,8 @@ export interface ContentItem {
   document?: string;
   approved: boolean;
   featured?: boolean;
-  postedBy?: { _id?: string; name: string; email?: string; position?: string };
+  postedBy?: { _id?: string; name: string; email?: string; position?: string; avatar?: string };
+  publisherUser?: { _id?: string; name: string; position?: string; avatar?: string };
 }
 
 export interface StaffProfile {

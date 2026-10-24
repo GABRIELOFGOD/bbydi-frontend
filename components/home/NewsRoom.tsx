@@ -18,6 +18,7 @@ const mapNews = (item: ContentItem): NewTypes => ({
   title: item.title,
   content: item.description ?? "",
   publisher: item.publisher,
+  publisherUser: item.publisherUser,
 });
 
 const NewsRoom = () => {
@@ -28,13 +29,10 @@ const NewsRoom = () => {
       <SectionTitle title="NewsRoom" />
       <div id="news" className="flex justify-between">
         <ColumnTitle text="Latest from BBYDI" className="my-auto" />
-        <Link href="/media#news" className="my-auto mt-5 w-fit rounded border-2 border-primary bg-transparent p-3 text-sm font-bold text-primary hover:bg-primary/10">
-          All news
-        </Link>
       </div>
       <div className="flex flex-col gap-2">
         {news.map((entry) => (
-          <Link key={entry.id} href={`/media/news/${entry.slug || createNewsSlug(entry.title)}`} className="w-full rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
+          <Link key={entry.id} href={`/news/${entry.slug || createNewsSlug(entry.title)}`} className="w-full rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
             <NewsCard {...entry} />
           </Link>
         ))}

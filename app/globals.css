@@ -314,3 +314,27 @@ html.reduce-motion *::after {
     @apply tracking-normal
   }
 }
+
+@keyframes partners-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.partners-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: partners-marquee 42s linear infinite;
+}
+
+.partners-marquee-track:hover,
+.partners-marquee-track:focus-within,
+.partners-marquee-track.is-paused {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .partners-marquee-track {
+    animation: none;
+  }
+}
