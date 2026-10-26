@@ -237,7 +237,7 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
                     <p className={`mt-2 text-xs font-semibold ${item.approved ? "text-green-700" : "text-amber-700"}`}>
                       {item.approved ? "Published" : "Awaiting approval"}
                     </p>
-                    {isAdmin && <p className="mt-1 text-xs text-muted-foreground">Posted by {item.postedBy?.name ?? "Uploader account unavailable"}</p>}
+                    {isAdmin && <p className="mt-1 text-xs text-muted-foreground">Posted by {item.postedBy?.name ?? item.publisherUser?.name ?? "Uploader account unavailable"}</p>}
                     {item.featured && <p className="mt-1 text-xs font-semibold text-primary">Featured on author profile</p>}
                   </div>
                   {(isAdmin || item.postedBy?._id === user?._id) && (
