@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import NewsArticle from "@/components/news/NewsArticle";
 import { fetchPublicApi, plainText, publicPageUrl, PublicContentItem } from "@/lib/publicContent";
+import { isExternalNewsItem } from "@/lib/news";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -25,7 +26,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: canonical,
       ...(article.image ? { images: [{ url: article.image, alt: article.imageCaption || article.title }] } : {}),
       ...(article.date || article.createdAt ? { publishedTime: article.date || article.createdAt } : {}),
-      ...((article.publisherUser?.name || article.publisher) ? { authors: [article.publisherUser?.name || article.publisher || ""] } : {}),
+      ...((isExternalNewsItem(article) && (article.sourceName || article.publisher)) || article.publisherUser?.name || article.publisher
+        ? { authors: [isExternalNewsItem(article) ? article.sourceName || article.publisher || "" : article.publisherUser?.name || article.publisher || ""] }
+        : {}),
       ...(article.category ? { section: article.category } : {}),
     },
     twitter: {

@@ -6,7 +6,7 @@ import SectionTitle from "../ui/SectionTitle";
 
 const Accountability = () => {
   return (
-    <div>
+    <div id="accountability" className="scroll-mt-24">
       <Container className="flex flex-col gap-5 py-20">
         <SectionTitle title="Accountability" />
         <ColumnTitle text="Annual reports & audited accounts" />

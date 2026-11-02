@@ -22,12 +22,20 @@ type FormValues = {
   context: string;
   summary: string;
   status: string;
+  period: string;
+  funder: string;
+  thematicAreas: string;
+  on2026Register: string;
+  relatedProjectIds: string;
   date: string;
   type: string;
   location: string;
   deadline: string;
   link: string;
   featured: string;
+  newsType: string;
+  sourceName: string;
+  sourceUrl: string;
 };
 
 const emptyForm: FormValues = {
@@ -40,18 +48,26 @@ const emptyForm: FormValues = {
   context: "",
   summary: "",
   status: "",
+  period: "",
+  funder: "",
+  thematicAreas: "",
+  on2026Register: "false",
+  relatedProjectIds: "",
   date: "",
   type: "",
   location: "",
   deadline: "",
   link: "",
   featured: "false",
+  newsType: "internal",
+  sourceName: "",
+  sourceUrl: "",
 };
 
 const kindFields: Record<ContentKind, (keyof FormValues)[]> = {
   program: ["category", "description"],
-  project: ["category", "status", "context", "summary"],
-  news: ["description", "date"],
+  project: ["category", "status", "context", "summary", "period", "funder", "location", "thematicAreas", "on2026Register"],
+  news: ["newsType", "sourceName", "sourceUrl", "summary", "description", "date"],
   blog: ["category", "description", "date"],
   opportunity: ["description", "status", "type", "location", "deadline", "link"],
   report: ["category", "description", "date"],
@@ -76,15 +92,28 @@ const fieldLabels: Record<keyof FormValues, string> = {
   deadline: "Deadline",
   link: "External link",
   featured: "Featured on author profile",
+  period: "Project period",
+  funder: "Funder",
+  thematicAreas: "Thematic areas (one per line)",
+  on2026Register: "On the 2026 project register",
+  relatedProjectIds: "Related projects",
+  newsType: "News type",
+  sourceName: "Source publication",
+  sourceUrl: "External article URL",
 };
 
-const longFields: (keyof FormValues)[] = ["description", "context", "summary"];
+const longFields: (keyof FormValues)[] = ["description", "context", "summary", "thematicAreas"];
 
 export default function ContentManager({ kind, title }: ContentManagerProps) {
   const { user } = useUser();
   const isAdmin = user?.role === "admin";
   const [items, setItems] = useState<ContentItem[]>([]);
   const [staffAccounts, setStaffAccounts] = useState<StaffAccount[]>([]);
+  const [projectOptions, setProjectOptions] = useState<ContentItem[]>([]);
+  const [homepageFeatures, setHomepageFeatures] = useState<ContentItem[]>([]);
+  const [featureTarget, setFeatureTarget] = useState<ContentItem | null>(null);
+  const [replacementId, setReplacementId] = useState("");
+  const [updatingHomepageFeature, setUpdatingHomepageFeature] = useState(false);
   const [publisherId, setPublisherId] = useState("");
   const [form, setForm] = useState<FormValues>(emptyForm);
   const [image, setImage] = useState<File | null>(null);
@@ -103,6 +132,23 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
       setLoading(false);
     }
   }, [kind, title]);
+
+  const fetchHomepageFeatures = useCallback(async () => {
+    if (!isAdmin || (kind !== "publication" && kind !== "report")) return [];
+    const [publications, reports] = await Promise.all([
+      apiRequest<ContentItem[]>("/content/publication/all"),
+      apiRequest<ContentItem[]>("/content/report/all"),
+    ]);
+    return [...publications, ...reports].filter((item) => item.homepageFeatured && item.approved);
+  }, [isAdmin, kind]);
+
+  const loadHomepageFeatures = useCallback(async () => {
+    try {
+      setHomepageFeatures(await fetchHomepageFeatures());
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not load homepage-featured publications");
+    }
+  }, [fetchHomepageFeatures]);
 
   useEffect(() => {
     let active = true;
@@ -128,6 +174,27 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
     return () => { active = false; };
   }, [isAdmin]);
 
+  useEffect(() => {
+    if (kind !== "publication") return;
+    let active = true;
+    void apiRequest<ContentItem[]>("/content/project/all")
+      .then((result) => { if (active) setProjectOptions(result); })
+      .catch((error: unknown) => {
+        if (active) toast.error(error instanceof Error ? error.message : "Could not load projects for publication links");
+      });
+    return () => { active = false; };
+  }, [kind]);
+
+  useEffect(() => {
+    let active = true;
+    void fetchHomepageFeatures()
+      .then((features) => { if (active) setHomepageFeatures(features); })
+      .catch((error: unknown) => {
+        if (active) toast.error(error instanceof Error ? error.message : "Could not load homepage-featured publications");
+      });
+    return () => { active = false; };
+  }, [fetchHomepageFeatures]);
+
   const resetForm = () => {
     setForm(emptyForm);
     setPublisherId("");
@@ -149,12 +216,20 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
       context: item.context ?? "",
       summary: item.summary ?? "",
       status: item.status ?? "",
+      period: item.period ?? "",
+      funder: item.funder ?? "",
+      thematicAreas: item.thematicAreas?.join("\n") ?? "",
+      on2026Register: String(item.on2026Register ?? false),
+      relatedProjectIds: item.relatedProjectIds?.join(",") ?? "",
       date: item.date?.slice(0, 10) ?? "",
       type: item.type ?? "",
       location: item.location ?? "",
       deadline: item.deadline ?? "",
       link: item.link ?? "",
       featured: String(item.featured ?? false),
+      newsType: item.newsType ?? (item.sourceUrl ? "external" : "internal"),
+      sourceName: item.sourceName ?? (item.sourceUrl ? item.publisher ?? "" : ""),
+      sourceUrl: item.sourceUrl ?? "",
     });
     setImage(null);
     setDocument(null);
@@ -165,7 +240,12 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
     setSaving(true);
 
     const body = new FormData();
-    Object.entries(form).forEach(([key, value]) => body.append(key, value));
+    Object.entries(form).forEach(([key, value]) => {
+      if (["period", "funder", "thematicAreas", "on2026Register"].includes(key) && kind !== "project") return;
+      if (key === "relatedProjectIds" && kind !== "publication") return;
+      if (["newsType", "sourceName", "sourceUrl"].includes(key) && kind !== "news") return;
+      body.append(key, value);
+    });
     const selectedPublisherId = publisherId || (editing ? editing.postedBy?._id : "");
     if (isAdmin && selectedPublisherId) body.append("publisherId", selectedPublisherId);
     if (image) body.append("image", image);
@@ -213,6 +293,43 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
     }
   };
 
+  const updateHomepageFeature = async (item: ContentItem, featured: boolean, replaceId?: string) => {
+    setUpdatingHomepageFeature(true);
+    try {
+      await apiRequest(`/content/${item.kind}/${item._id}/homepage-featured`, {
+        method: "PATCH",
+        body: { featured, ...(replaceId ? { replaceId } : {}) },
+      });
+      toast.success(featured ? "Publication featured on the homepage" : "Homepage feature removed");
+      setFeatureTarget(null);
+      setReplacementId("");
+      await Promise.all([loadItems(), loadHomepageFeatures()]);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not update homepage feature");
+      await loadHomepageFeatures();
+    } finally {
+      setUpdatingHomepageFeature(false);
+    }
+  };
+
+  const requestHomepageFeature = (item: ContentItem) => {
+    if (!isAdmin || (item.kind !== "publication" && item.kind !== "report")) return;
+    if (!item.approved) {
+      toast.error("Publish this item before featuring it on the homepage");
+      return;
+    }
+    if (item.homepageFeatured) {
+      void updateHomepageFeature(item, false);
+      return;
+    }
+    if (homepageFeatures.length >= 4) {
+      setFeatureTarget(item);
+      setReplacementId("");
+      return;
+    }
+    void updateHomepageFeature(item, true);
+  };
+
   return (
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(20rem,0.75fr)]">
       <section className="space-y-4">
@@ -239,6 +356,16 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
                     </p>
                     {isAdmin && <p className="mt-1 text-xs text-muted-foreground">Posted by {item.postedBy?.name ?? item.publisherUser?.name ?? "Uploader account unavailable"}</p>}
                     {item.featured && <p className="mt-1 text-xs font-semibold text-primary">Featured on author profile</p>}
+                    {isAdmin && (kind === "publication" || kind === "report") && (
+                      <button
+                        type="button"
+                        disabled={!item.approved || updatingHomepageFeature}
+                        onClick={() => requestHomepageFeature(item)}
+                        className="mt-2 text-xs font-semibold text-primary hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        {item.homepageFeatured ? "Remove from homepage features" : "Feature on homepage"}
+                      </button>
+                    )}
                   </div>
                   {(isAdmin || item.postedBy?._id === user?._id) && (
                     <div className="flex shrink-0 flex-wrap gap-2">
@@ -263,35 +390,80 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
       <section className="h-fit rounded border p-5">
         <h2 className="mb-4 font-bold">{editing ? `Edit ${title}` : `Add ${title}`}</h2>
         <form onSubmit={submit} className="space-y-4">
-          {(["title", ...kindFields[kind]] as (keyof FormValues)[]).map((field) => (
+          {(["title", ...kindFields[kind]] as (keyof FormValues)[])
+            .filter((field) => !(kind === "news" && ["sourceName", "sourceUrl"].includes(field) && form.newsType !== "external"))
+            .map((field) => (
             <label key={field} className="block space-y-1.5 text-sm font-medium">
               <span>
                 {kind === "publication" && field === "category"
                   ? "Resource type"
                   : kind === "innovation" && field === "type"
                     ? "Status / link label"
+                    : kind === "news" && field === "description"
+                      ? "Article body / excerpt"
                     : fieldLabels[field]}
               </span>
-              {field === "status" && kind === "opportunity" ? (
+              {field === "newsType" && kind === "news" ? (
+                <select
+                  value={form.newsType}
+                  onChange={(event) => setForm((current) => ({ ...current, newsType: event.target.value }))}
+                  className="h-10 w-full rounded border px-3"
+                >
+                  <option value="internal">Internal BBYDI news</option>
+                  <option value="external">External media coverage</option>
+                </select>
+              ) : field === "status" && kind === "opportunity" ? (
                 <select value={form[field]} onChange={(event) => setForm((prev) => ({ ...prev, [field]: event.target.value }))} className="h-10 w-full rounded border px-3">
                   <option value="">Select status</option>
                   <option value="open">Open</option>
                   <option value="closed">Closed</option>
                   <option value="archived">Archived</option>
                 </select>
+              ) : field === "on2026Register" ? (
+                <input
+                  type="checkbox"
+                  checked={form.on2026Register === "true"}
+                  onChange={(event) => setForm((current) => ({ ...current, on2026Register: String(event.target.checked) }))}
+                  className="size-4 accent-primary"
+                />
               ) : longFields.includes(field) ? (
                 <textarea value={form[field]} onChange={(event) => setForm((prev) => ({ ...prev, [field]: event.target.value }))} required={field === "title"} rows={4} className="w-full rounded border p-3" />
               ) : (
                 <input
-                  type={field === "date" ? "date" : "text"}
+                  type={field === "date" ? "date" : field === "sourceUrl" ? "url" : "text"}
                   value={form[field]}
                   onChange={(event) => setForm((prev) => ({ ...prev, [field]: event.target.value }))}
-                  required={field === "title"}
+                  required={field === "title" || (kind === "news" && form.newsType === "external" && ["sourceName", "sourceUrl"].includes(field))}
+                  placeholder={field === "sourceUrl" ? "https://..." : undefined}
                   className="h-10 w-full rounded border px-3"
                 />
               )}
             </label>
           ))}
+          {kind === "news" && (
+            <p className="text-xs leading-5 text-muted-foreground">
+              For external coverage, enter the excerpt in the article body and provide the publication name and original article URL. Readers will see the excerpt on BBYDI before following the source link.
+            </p>
+          )}
+          {kind === "publication" && (
+            <label className="block space-y-1.5 text-sm font-medium">
+              <span>{fieldLabels.relatedProjectIds}</span>
+              <select
+                multiple
+                value={form.relatedProjectIds ? form.relatedProjectIds.split(",").filter(Boolean) : []}
+                onChange={(event) => setForm((current) => ({
+                  ...current,
+                  relatedProjectIds: Array.from(event.target.selectedOptions, (option) => option.value).join(","),
+                }))}
+                className="min-h-36 w-full rounded border px-3 py-2"
+              >
+                {projectOptions.map((project) => (
+                  <option key={project._id} value={project._id}>{project.title}</option>
+                ))}
+              </select>
+              <span className="block text-xs font-normal text-muted-foreground">Select one or more projects to show this publication on their detail pages.</span>
+            </label>
+          )}
           {isAdmin && (
             <label className="block space-y-1.5 text-sm font-medium">
               <span>Publisher</span>
@@ -343,6 +515,73 @@ export default function ContentManager({ kind, title }: ContentManagerProps) {
           </div>
         </form>
       </section>
+      {featureTarget && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !updatingHomepageFeature) {
+              setFeatureTarget(null);
+              setReplacementId("");
+            }
+          }}
+        >
+          <section
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="homepage-feature-title"
+            className="w-full max-w-lg rounded-lg bg-white p-6 shadow-xl"
+          >
+            <h2 id="homepage-feature-title" className="text-lg font-bold">
+              Replace a featured publication?
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              The homepage already has four featured publications. Choose which one to remove so “{featureTarget.title}” can take its place.
+            </p>
+            <fieldset className="mt-4 max-h-64 space-y-2 overflow-y-auto">
+              <legend className="sr-only">Choose a featured publication to replace</legend>
+              {homepageFeatures.map((publication) => (
+                <label key={publication._id} className="flex cursor-pointer items-start gap-3 rounded border p-3 text-sm hover:bg-muted/50">
+                  <input
+                    type="radio"
+                    name="homepage-feature-replacement"
+                    value={publication._id}
+                    checked={replacementId === publication._id}
+                    onChange={() => setReplacementId(publication._id)}
+                    className="mt-1 accent-primary"
+                  />
+                  <span>
+                    <span className="block font-semibold">{publication.title}</span>
+                    <span className="mt-0.5 block text-xs text-muted-foreground">
+                      {publication.kind === "report" ? "Report" : "Publication"}
+                    </span>
+                  </span>
+                </label>
+              ))}
+            </fieldset>
+            <div className="mt-5 flex justify-end gap-2">
+              <button
+                type="button"
+                disabled={updatingHomepageFeature}
+                onClick={() => {
+                  setFeatureTarget(null);
+                  setReplacementId("");
+                }}
+                className="rounded border px-4 py-2 text-sm font-semibold disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={!replacementId || updatingHomepageFeature}
+                onClick={() => void updateHomepageFeature(featureTarget, true, replacementId)}
+                className="rounded bg-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+              >
+                {updatingHomepageFeature ? "Updating..." : "Replace and feature"}
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
     </div>
   );
 }

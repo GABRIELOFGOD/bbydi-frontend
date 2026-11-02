@@ -1,33 +1,86 @@
+import Link from "next/link";
 import { NewTypes } from "@/lib/types";
-import Image from "next/image";
+import { isExternalNewsItem } from "@/lib/news";
 
-const NewsCard = ({ content, date, title, publisher, publisherUser }: NewTypes) => {
+type NewsCardProps = NewTypes & {
+  href: string;
+  variant?: "homepage" | "archive";
+};
+
+const plainText = (content: string) =>
+  content
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const NewsCard = ({
+  content,
+  summary,
+  date,
+  title,
+  newsType,
+  sourceName,
+  sourceUrl,
+  href,
+  category,
+  variant = "homepage",
+}: NewsCardProps) => {
   const publishedAt = new Date(date);
   const formattedDate = Number.isNaN(publishedAt.getTime())
     ? ""
-    : publishedAt.toLocaleDateString("en-NG", { dateStyle: "medium", timeZone: "UTC" });
+    : publishedAt
+        .toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          timeZone: "UTC",
+        })
+        .toUpperCase();
+  const description = plainText(summary || content);
+  const isArchive = variant === "archive";
+  const publisherLabel = isExternalNewsItem({ newsType, sourceUrl })
+    ? sourceName || "External coverage"
+    : "BBYDI";
+  const kindLabel = category || (newsType === "external" ? "Media coverage" : "News report");
+
   return (
-    <article className="w-full py-5 border-b border-muted flex flex-col md:flex-row gap-5 md:gap-10 text-foreground hover:text-primary">
-      <p className="text-muted-foreground text-xs pt-2 font-semibold">{formattedDate}</p>
-      <div className="flex flex-col gap-2">
-        <h3 className="text-lg font-bold">{title}</h3>
-        {publisherUser ? (
-          <div className="flex items-center gap-2.5 text-xs text-muted-foreground">
-            <div className="relative size-9 shrink-0 overflow-hidden rounded-full bg-muted">
-              {publisherUser.avatar
-                ? <Image src={publisherUser.avatar} alt="" fill unoptimized sizes="36px" className="object-cover" />
-                : <span className="flex size-full items-center justify-center font-bold text-foreground" aria-hidden="true">{publisherUser.name.charAt(0).toUpperCase()}</span>}
-            </div>
-            <div>
-              <p className="font-semibold text-foreground">{publisherUser.name}</p>
-              {publisherUser.position && <p>{publisherUser.position}</p>}
-            </div>
-          </div>
-        ) : publisher && <p className="text-xs font-semibold text-muted-foreground">{publisher}</p>}
-        <p className="text-black/80 text-sm">{content.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim()}</p>
+    <article className={`grid w-full gap-3 text-foreground sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-8 ${isArchive ? "border-b-0 py-5 md:py-6" : "border-b border-black/15 py-6 md:py-7"}`}>
+      <p className="pt-1 text-xs font-bold tracking-[0.1em] text-muted-foreground">
+        {formattedDate}
+      </p>
+      <div className="flex min-w-0 flex-col items-start gap-1.5">
+        {publisherLabel && (
+          <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">
+            {publisherLabel}
+          </p>
+        )}
+        <h3 className={`font-bold leading-6 ${isArchive ? "text-base" : "text-base sm:text-lg"}`}>
+          <Link href={href} className="hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
+            {title}
+          </Link>
+        </h3>
+        {description && (
+          <p className="line-clamp-2 text-sm leading-6 text-foreground/75">
+            {description}
+          </p>
+        )}
+        {isArchive ? (
+          <span className="mt-1 inline-flex rounded-full border border-black/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+            {kindLabel}
+          </span>
+        ) : (
+          <Link
+            href={href}
+            className="mt-1 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-[0.1em] text-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+          >
+            Read more <span aria-hidden="true">→</span>
+          </Link>
+        )}
       </div>
     </article>
-  )
-}
+  );
+};
 
 export default NewsCard;

@@ -7,7 +7,7 @@ import GovernanceAccordion from "./GovernanceAccordion";
 
 const Governance = () => {
   return (
-    <div>
+    <div id="governance" className="scroll-mt-24">
       <Container className="flex flex-col gap-5  py-20">
         <SectionTitle title="Governance" />
         <ColumnTitle text="How BBYDI is governed" />

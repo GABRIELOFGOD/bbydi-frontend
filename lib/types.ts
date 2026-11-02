@@ -18,13 +18,19 @@ export type ContentKind =
 
 export interface ProjectCardTypes {
   id: string;
+  slug?: string;
   category: string;
   status: string;
   title: string;
   context: string;
   desc: string;
-  image: string;
-};
+  image?: string;
+  period?: string;
+  funder?: string;
+  location?: string;
+  thematicAreas?: string[];
+  on2026Register?: boolean;
+}
 
 export interface NewTypes {
   id: string;
@@ -33,6 +39,11 @@ export interface NewTypes {
   title: string;
   content: string;
   publisher?: string;
+  category?: string;
+  summary?: string;
+  newsType?: "internal" | "external";
+  sourceName?: string;
+  sourceUrl?: string;
   publisherUser?: { _id?: string; name: string; position?: string; avatar?: string };
 }
 

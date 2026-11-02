@@ -21,7 +21,7 @@ const Card = ({ numberOfCards, title, description, cta, className } : {
         <h3 className="text-lg font-bold mt-2">{title}</h3>
       )}
       {description && (
-        <p className="text-black/70 text-sm mt-2 line-clamp-2 leading-6">{description}</p>
+        <p className="mt-2 text-sm leading-6 text-black/70">{description}</p>
       )}
       {cta && (
         <Link

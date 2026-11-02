@@ -28,10 +28,10 @@ const TheProblem = () => {
     <div className="bg-foreground py-20 flex flex-col w-full text-white">
       <Container className="grid grid-cols-1 md:grid-cols-2 md:gap-10 gap-5">
         <div className="flex flex-col gap-5">
-          <SectionTitle showLine={false} title="The problem we exist for" />
+          <SectionTitle showLine={false} title="The problem we exist for" className="text-secondary" />
           <ColumnTitle text="Nigeria ranks 180th out of 185 countries on women's parliamentary representation." className="text-white" />
-          <p className="text-lg">Nearly half the population. 4.4% of elected positions. Fifteen states have not a single woman in their state legislature — not underrepresentation, zero.</p>
-          <Link href="/projects">
+          <p className="text-lg">Nearly half the population. 4.4% of National Assembly seats. Fifteen states have not a single woman in their state legislature — not underrepresentation, zero.</p>
+          <Link href="/space-for-her">
             <Button className={cn("bg-white hover:bg-white/80 text-primary font-bold p-5 rounded w-fit")}>How Space for Her answers it</Button>
           </Link>
         </div>

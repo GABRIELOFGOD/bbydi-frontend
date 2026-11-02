@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { apiRequest } from "@/lib/api";
 import { ContentItem } from "@/lib/content";
 import { News } from "@/lib/constants";
-import { createNewsSlug } from "@/lib/news";
+import { createNewsSlug, isExternalNewsItem, safeExternalNewsUrl } from "@/lib/news";
 import SafeHtml from "@/components/news/SafeHtml";
 import NewsShareButtons from "@/components/news/NewsShareButtons";
 
@@ -203,6 +203,9 @@ export default function NewsArticle({ id: slug, kind = "news", initialArticle }:
     : "";
   const locationLabel = article.location?.toUpperCase();
   const publisher = article.publisherUser;
+  const isExternalNews = kind === "news" && isExternalNewsItem(article);
+  const externalSourceUrl = isExternalNews ? safeExternalNewsUrl(article.sourceUrl) : undefined;
+  const externalSourceName = article.sourceName || article.publisher;
 
   return (
     <>
@@ -224,7 +227,9 @@ export default function NewsArticle({ id: slug, kind = "news", initialArticle }:
           </h1>
           {article.summary && <p className="mt-3 max-w-2xl text-sm leading-6 text-white/70">{article.summary}</p>}
           <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 text-sm text-white/70">
-            {publisher && (
+            {isExternalNews && externalSourceName ? (
+              <p className="text-sm font-semibold text-white/80">{externalSourceName}</p>
+            ) : publisher && (
               <div className="flex items-center gap-3">
                 <div className="relative size-11 shrink-0 overflow-hidden rounded-full bg-white/15">
                   {publisher.avatar
@@ -239,7 +244,7 @@ export default function NewsArticle({ id: slug, kind = "news", initialArticle }:
             )}
             <p>{[article.readingTime, dateLabel, locationLabel].filter(Boolean).join(" · ")}</p>
           </div>
-          {!publisher && article.publisher && <p className="mt-4 text-sm text-white/70">{article.publisher}</p>}
+          {!isExternalNews && !publisher && article.publisher && <p className="mt-4 text-sm text-white/70">{article.publisher}</p>}
         </div>
       </header>
 
@@ -256,8 +261,24 @@ export default function NewsArticle({ id: slug, kind = "news", initialArticle }:
         )}
 
         <article className="mx-auto mt-10 max-w-180">
-          <ArticleAudioPlayer title={article.title} html={article.description ?? ""} />
+          {!isExternalNews && <ArticleAudioPlayer title={article.title} html={article.description ?? ""} />}
           <SafeHtml html={article.description ?? ""} className="news-rich-content news-article-body" />
+          {isExternalNews && externalSourceUrl && (
+            <div className="mt-8 border-l-2 border-primary bg-muted/40 p-5">
+              <p className="text-sm leading-6 text-muted-foreground">
+                This is an excerpt from {externalSourceName || "the original publication"}.
+              </p>
+              <a
+                href={externalSourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-1 text-sm font-bold uppercase tracking-[0.08em] text-primary hover:underline"
+              >
+                Read more on {externalSourceName || "the original publication"}
+                <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+          )}
           <div className="mt-10 border-t pt-5">
             <NewsShareButtons title={article.title} />
           </div>

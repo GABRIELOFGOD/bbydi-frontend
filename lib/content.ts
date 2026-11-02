@@ -13,6 +13,11 @@ export interface ContentItem {
   language?: string;
   series?: string;
   status?: string;
+  period?: string;
+  funder?: string;
+  thematicAreas?: string[];
+  on2026Register?: boolean;
+  relatedProjectIds?: string[];
   image?: string;
   imageCaption?: string;
   imageAlt?: string;
@@ -28,11 +33,14 @@ export interface ContentItem {
   wordCount?: number;
   tags?: string[];
   sourceUrl?: string;
+  newsType?: "internal" | "external";
+  sourceName?: string;
   date?: string;
   createdAt?: string;
   document?: string;
   approved: boolean;
   featured?: boolean;
+  homepageFeatured?: boolean;
   postedBy?: { _id?: string; name: string; email?: string; position?: string; avatar?: string };
   publisherUser?: { _id?: string; name: string; position?: string; avatar?: string };
 }
