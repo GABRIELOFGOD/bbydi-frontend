@@ -80,7 +80,7 @@ export default function OurExpertise() {
       </header>
 
       <main>
-        <Container className="flex flex-col gap-6 py-14 md:py-[72px]">
+        <Container className="flex flex-col gap-6 py-14 md:py-18">
           <div className="flex flex-col gap-5">
             <CapabilityLabel>How we work</CapabilityLabel>
             <div>
@@ -131,7 +131,7 @@ export default function OurExpertise() {
               alt="Women taking part in a community townhall on technology-facilitated gender-based violence"
               width={900}
               height={600}
-              className="h-auto max-h-[560px] w-full object-cover"
+              className="h-auto max-h-140 w-full object-cover"
               priority
             />
             <figcaption className="absolute inset-x-0 bottom-0 bg-black/70 px-4 py-3 text-xs text-white md:text-sm">
