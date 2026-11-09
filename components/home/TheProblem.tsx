@@ -1,57 +1,71 @@
-import { cn } from "@/lib/utils";
 import Container from "../Container";
 import { Button } from "../ui/button";
-import ColumnTitle from "../ui/ColumnTitle";
 import SectionTitle from "../ui/SectionTitle";
 import Link from "next/link";
 
 const TheProblem = () => {
   const data = [
     {
-      id: "01",
-      value: "4.4%",
-      text: "of elected positions in Nigeria are held by women"
+      value: "71%",
+      text: "of girls in Kwara State undergo FGM before turning 15",
     },
     {
-      id: "02",
-      value: "27.3%",
-      text: "is the sub-Saharan African average"
+      value: "100+",
+      text: "traditional rulers mobilised against gender-based violence, with 33 public pledges signed",
     },
     {
-      id: "03",
-      value: "15",
-      text: "states with zero women in the state legislature"
-    }
-  ]
-  
+      value: "5",
+      text: "Kwara communities now running their own GBV prevention systems",
+    },
+  ];
+
   return (
-    <div className="bg-foreground py-20 flex flex-col w-full text-white">
-      <Container className="grid grid-cols-1 md:grid-cols-2 md:gap-10 gap-5">
-        <div className="flex flex-col gap-5">
-          <SectionTitle showLine={false} title="The problem we exist for" className="text-secondary" />
-          <ColumnTitle text="Nigeria ranks 180th out of 185 countries on women's parliamentary representation." className="text-white" />
-          <p className="text-lg">Nearly half the population. 4.4% of National Assembly seats. Fifteen states have not a single woman in their state legislature — not underrepresentation, zero.</p>
-          <Link href="/space-for-her">
-            <Button className={cn("bg-white hover:bg-white/80 text-primary font-bold p-5 rounded w-fit")}>How Space for Her answers it</Button>
+    <section className="w-full bg-[#191919] py-16 text-white md:py-24">
+      <Container className="grid grid-cols-1 gap-10 md:grid-cols-2 md:items-center md:gap-14">
+        <div className="flex flex-col items-start gap-5">
+          <SectionTitle
+            showLine={false}
+            title="The problem we exist for"
+            className="text-secondary"
+          />
+          <h2 className="max-w-3xl text-3xl font-extrabold leading-[1.14] tracking-tight">
+            71% of girls in Kwara State undergo female genital mutilation before
+            they turn 15.
+          </h2>
+          <p className="max-w-3xl text-lg leading-[1.65] text-white/85">
+            In Moro Local Government Area the practice is woven into
+            traditional rites. Changing that means changing what a community
+            accepts — which is why the work starts with the traditional
+            rulers, religious leaders and women’s chiefs whose word settles
+            the matter.
+          </p>
+          <Link href="/projects?theme=gender">
+            <Button className="w-fit rounded bg-white p-5 font-bold text-primary hover:bg-white/90">
+              How our gender justice work answers it
+            </Button>
           </Link>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-3">
-            {data.map((dt) => (
-              <div key={dt.id} className="border-l-3 border-secondary p-3 flex flex-col gap-2">
-                <p className="text-3xl font-extrabold">{dt.value}</p>
-                <p className="text-muted-foreground text-sm">{dt.text}</p>
-              </div>
-            ))}
-          </div>
-          <p className="text-muted-foreground text-sm">
-            Sources: IPU Parline (Feb 2024); PLAC; Agora Policy post-2023 election analysis.
+        <div className="flex flex-col gap-4">
+          {data.map((item) => (
+            <article
+              key={item.value}
+              className="flex flex-col gap-2 border-l-[3px] border-secondary px-5 py-2"
+            >
+              <p className="text-3xl font-extrabold leading-none">
+                {item.value}
+              </p>
+              <p className="text-sm leading-6 text-white/60">{item.text}</p>
+            </article>
+          ))}
+          <p className="pt-1 text-xs leading-6 text-white/55">
+            Sources: Nigerian Demographic and Health Survey, cited in BBYDI’s
+            2024 Annual Report; BBYDI 2024 and 2025 Annual Reports.
           </p>
         </div>
       </Container>
-    </div>
-  )
-}
+    </section>
+  );
+};
 
 export default TheProblem;

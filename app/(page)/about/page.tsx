@@ -3,6 +3,7 @@ import MissionVision from "@/components/about/MissionVision";
 import PageHeader from "@/components/ui/PageHeader";
 import { Metadata } from "next";
 import Governance from "@/components/about/Governance";
+import BoardOfTrustees from "@/components/about/BoardOfTrustees";
 import OurTeam from "@/components/about/OurTeam";
 import Accountability from "@/components/about/Accountability";
 
@@ -23,6 +24,7 @@ const AboutPage = () => {
       <OurStory />
       <MissionVision />
       <Governance />
+      <BoardOfTrustees />
       <OurTeam />
       <Accountability />
     </div>

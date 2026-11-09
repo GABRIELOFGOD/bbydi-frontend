@@ -4,6 +4,30 @@ import { cn } from "@/lib/utils";
 import CountUpCard from "../ui/CountUpCard";
 import Link from "next/link";
 
+const heroMetrics = [
+  {
+    value: 2018,
+    text: "Officially registered as a non-profit organisation in Nigeria",
+    format: false,
+  },
+  {
+    value: 2200,
+    text: "People reached across Nigeria, West and Central Africa",
+    scale: 1000,
+    decimalPlaces: 1,
+    suffix: "M+",
+  },
+  {
+    value: 110000,
+    text: "People trained in AI, digital, civic and climate skills",
+    suffix: "+",
+  },
+  {
+    value: 137,
+    text: "Knowledge products published, all years",
+  },
+];
+
 const Hero = () => {
   return (
     <section className="relative isolate w-full overflow-hidden bg-[#171717] text-white">
@@ -17,10 +41,10 @@ const Hero = () => {
         className="object-cover object-center"
       />
       <div className="absolute inset-0 bg-linear-to-r from-black/85 via-black/75 to-black/65" aria-hidden="true" />
-      <div className="pointer-events-none absolute -right-36 -top-32 hidden size-[34rem] rounded-full border-[4.5rem] border-[#9f3f36]/20 sm:-right-28 sm:-top-32 sm:block sm:size-[36rem]" aria-hidden="true" />
+      <div className="pointer-events-none absolute -right-36 -top-32 hidden size-136 rounded-full border-[4.5rem] border-[#9f3f36]/20 sm:-right-28 sm:-top-32 sm:block sm:size-144" aria-hidden="true" />
       <div className="relative z-10 w-full py-16 sm:py-[4.6rem]">
         <Container className="flex flex-col gap-10">
-          <div className="flex w-full max-w-[720px] flex-col gap-6">
+          <div className="flex w-full max-w-180 flex-col gap-6">
             <div className="w-fit rounded-full border border-secondary/60 bg-primary/25">
               <p className="px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-[#edb9b4] sm:text-xs sm:tracking-[0.16em]">
                 Women-led · Non-partisan · Tech for Good
@@ -33,8 +57,8 @@ const Hero = () => {
               <span className="text-secondary">strengthening communities and democracies</span>.
             </h1>
 
-            <p className="max-w-[660px] text-base leading-[1.65] text-white/75 sm:text-[18px]">
-              BBYDI is a women-led, non-partisan civic organisation working with young people, women, girls, persons with disabilities and communities across West and Central Africa. Through research, education, policy intervention, technology and advocacy; we advance inclusive governance, democracy, gender justice, digital rights and sustainable development.
+            <p className="max-w-165 text-base leading-[1.65] text-white/75 sm:text-[18px]">
+              BBYDI is a women-led, non-partisan civic organisation working with young people, women, girls, persons with disabilities and communities across West and Central Africa. Through research, education, policy intervention, technology and advocacy; we advance inclusive governance, democracy, gender justice, digital rights and sustainable development goals.
             </p>
 
             <div className="mt-1.5 flex flex-col gap-3 sm:flex-row sm:gap-3">
@@ -54,14 +78,14 @@ const Hero = () => {
           </div>
           <div id="impact" className="w-full scroll-mt-24 border-t border-white/25 pt-6">
             <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-10">
-              <CountUpCard value={2018} text="Officially registered as a non-profit organisation in Nigeria" format={false} />
-              <CountUpCard value={2305} text="People who reached KEMI, our survivor-support chatbot, across 11 countries" />
-              <CountUpCard value={9468} text="MyAIFactChecker users in Nigeria and Cameroon" />
-              <CountUpCard value={5500} text="Students reached across all programmes" suffix="+" />
+              {heroMetrics.map((metric) => (
+                <CountUpCard
+                  key={metric.value}
+                  {...metric}
+                  textClassName="text-sm text-white/65"
+                />
+              ))}
             </div>
-            <p className="mt-5 text-xs text-white/55">
-              All figures are 2025 results, reported in BBYDI’s 2025 Annual Report.
-            </p>
           </div>
         </Container>
       </div>

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/blog" },
   openGraph: {
     type: "website",
-    title: "The BBYDI Blog",
+    title: "Blog",
     description: "Analysis and stories on inclusive governance, youth empowerment and gender equality in Nigeria.",
   },
 };

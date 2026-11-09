@@ -21,7 +21,7 @@ const OurStory = () => {
               <p className="text-sm text-gray-500"><span className="font-bold text-foreground">Before registration.</span> BBYDI’s work began informally in 2014 as a student initiative at the University of Ilorin. Those activities preceded the organisation’s formal establishment in 2018.</p>
             </div>
             <div className="px-4 border-l-3 border-primary">
-              <p className="text-lg font-semibold ">&quot;We empower young people and local communities to catalyse sustainable development from the grassroots, and to champion socio-political transformation across Nigeria.&quot;</p>
+              <p className="text-lg font-semibold">&quot;We empower young people and local communities to catalyse sustainable development from the grassroots, and to champion socio-political transformation across Nigeria.&quot;</p>
             </div>
           </div>
 

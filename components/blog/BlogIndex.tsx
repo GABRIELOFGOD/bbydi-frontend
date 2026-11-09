@@ -107,7 +107,7 @@ export default function BlogIndex({ initialPosts = [] }: { initialPosts?: Conten
     <main className="min-h-screen bg-[#faf9f7]">
       <PageHeader
         // topNote="Ideas, evidence & perspectives"
-        header="The BBYDI Blog"
+        header="Blog"
         page="Blog"
         description="Analysis and stories from the people working for inclusive governance, youth empowerment and gender equality across Nigeria."
       />

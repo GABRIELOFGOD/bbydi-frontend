@@ -57,7 +57,7 @@ const ContactForm = () => {
         <label htmlFor="contact-writing-as" className="font-semibold text-sm">I am writing as a...</label>
         <select id="contact-writing-as" className="rounded h-10 py-2 px-3 border" value={form.writingAs} onChange={(event) => update("writingAs", event.target.value)} required>
           <option value="">--select an option--</option>
-          <option value="Funder">Funder</option>
+          <option value="Funder / donor">Funder / donor</option>
           <option value="Implementing partner">Implementing partner</option>
           <option value="Media">Media</option>
           <option value="Volunteer">Volunteer</option>

@@ -52,7 +52,7 @@ export interface StaffProfile {
   image?: string;
   bio?: string;
   accountId?: string;
-  category: "leadership" | "staff" | "volunteer";
+  category: "trustee" | "leadership" | "staff" | "volunteer";
   active: boolean;
   displayOrder?: number;
 }

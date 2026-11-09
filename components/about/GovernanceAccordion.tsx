@@ -8,11 +8,11 @@ import { Governed } from "@/lib/constants";
 
 const GovernanceAccordion = () => {
   return (
-    <Accordion defaultValue={["shipping"]} className="max-w-lg gap-5 p-3">
+    <Accordion defaultValue={["1"]} className="gap-2">
       {Governed.map((itm) => (
-        <AccordionItem className={"border-2 p-3"} value={itm.id} key={itm.id}>
-          <AccordionTrigger className={"font-bold no-underline"}>{itm.topic}</AccordionTrigger>
-          <AccordionContent>
+        <AccordionItem className="rounded-sm border border-black/10 px-4" value={itm.id} key={itm.id}>
+          <AccordionTrigger className="font-bold no-underline hover:no-underline">{itm.topic}</AccordionTrigger>
+          <AccordionContent className="text-sm leading-6 text-foreground/75">
             {itm.content}
           </AccordionContent>
         </AccordionItem>

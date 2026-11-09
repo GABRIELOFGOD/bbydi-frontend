@@ -25,14 +25,18 @@ const OurTeam = () => {
       try {
         const profiles = await apiRequest<StaffProfile[]>("/staff/profiles");
         if (active) {
-          setTeam(profiles.map((profile) => ({
+          setTeam(profiles
+            .filter((profile): profile is StaffProfile & {
+              category: "leadership" | "staff" | "volunteer";
+            } => profile.category !== "trustee")
+            .map((profile) => ({
             id: profile._id,
             name: profile.name,
             role: profile.position,
             image: profile.image,
             category: profile.category === "leadership" ? "admin" : profile.category,
             bio: profile.bio,
-          })));
+            })));
         }
       } catch (error) {
         if (active) toast.error(error instanceof Error ? error.message : "Could not load team profiles");

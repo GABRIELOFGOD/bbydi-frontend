@@ -90,7 +90,7 @@ export default async function TeamMemberPage({ params }: PageProps) {
               <Link href="/">Home</Link> / <Link href="/about#team">About</Link> / {profile.name}
             </nav>
             <span className="inline-block rounded-sm bg-primary px-2 py-1 text-[10px] font-bold uppercase tracking-widest">
-              {profile.category === "leadership" ? "Leadership" : profile.category === "volunteer" ? "Volunteer" : "Staff"}
+              {profile.category === "trustee" ? "Trustee" : profile.category === "leadership" ? "Leadership" : profile.category === "volunteer" ? "Volunteer" : "Staff"}
             </span>
             <h1 className="mt-2 text-2xl font-extrabold sm:text-3xl">{profile.name}</h1>
             <p className="mt-1 font-semibold text-[#f3c1bc]">{profile.position}</p>

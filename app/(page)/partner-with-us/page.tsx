@@ -17,39 +17,55 @@ const PartnerWithUs = () => {
         page="Partner With Us"
         description="Funders, implementing partners, media and volunteers — tell us which you are and we will route you to the right person."
       />
-      <Container className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10 py-20">
+      <Container className="grid grid-cols-1 items-start gap-8 py-12 md:grid-cols-2 md:gap-14 md:py-16">
         <ContactForm />
-        <div className="border p-4 md:p-10 flex flex-col gap-5">
-          <div className="flex flex-col gap-3">
-            <h3 className="text-xl font-bold">Head office</h3>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-5 rounded-sm border border-primary/70 bg-white p-6 shadow-sm md:p-7">
             <div className="flex flex-col gap-2">
-              <p className="text-gray-500 text-sm">Ilorin, Kwara State, Nigeria</p>
-              <p className="text-primary text-sm">2, Crescent road, along Noktel Hotel, GRA</p>
+              <h2 className="text-lg font-bold">Head office — Ilorin</h2>
+              <p className="text-sm leading-6 text-foreground/70">
+                2 Catchment Road, Opposite Forest, Along Sydney Restaurant,
+                GRA, Ilorin, Kwara State, Nigeria
+              </p>
             </div>
-          </div>
 
-          <div className="flex flex-col gap-3">
-            <h3 className="text-xl font-bold">Abuja office</h3>
             <div className="flex flex-col gap-2">
-              <p className="text-primary text-sm">Address to supply</p>
+              <h2 className="text-lg font-bold">Abuja office</h2>
+              <p className="text-sm leading-6 text-foreground/70">
+                No. 12 T.O.S. Benson Crescent, Utako, Abuja, Nigeria
+              </p>
             </div>
-          </div>
 
-          <div className="flex flex-col gap-3">
-            <h3 className="text-xl font-bold">Email & phone</h3>
             <div className="flex flex-col gap-2">
-              <p className="text-primary text-sm">To supply</p>
+              <h2 className="text-lg font-bold">Email &amp; phone</h2>
+              <div className="flex flex-col items-start text-sm leading-6 text-foreground/70">
+                <a className="underline decoration-foreground/30 underline-offset-2 hover:text-primary" href="mailto:info@thebrainbuilders.org">
+                  info@thebrainbuilders.org
+                </a>
+                <a className="underline decoration-foreground/30 underline-offset-2 hover:text-primary" href="tel:+2347068775529">
+                  +234 706 877 5529
+                </a>
+                <a className="underline decoration-foreground/30 underline-offset-2 hover:text-primary" href="tel:+2348168583387">
+                  +234 816 858 3387
+                </a>
+              </div>
             </div>
-          </div>
 
-          <div className="flex flex-col gap-3">
-            <h3 className="text-xl font-bold">Online</h3>
             <div className="flex flex-col gap-2">
-              <p className="text-gray-500 text-sm">thebrainbuilders.org</p>
-              <p className="text-gray-500 text-sm">X / Twitter: @BrainBuilders01</p>
-              <p className="text-gray-500 text-sm">Facebook: Brain Builders Youth Development Initiative</p>
+              <h2 className="text-lg font-bold">Online</h2>
+              <div className="flex flex-col text-sm leading-6 text-foreground/70">
+                <a className="hover:text-primary hover:underline" href="https://thebrainbuilders.org" target="_blank" rel="noopener noreferrer">
+                  thebrainbuilders.org
+                </a>
+                <p>X / Twitter: @BrainBuilders01</p>
+                <p>Facebook: Brain Builders Youth Development Initiative</p>
+              </div>
             </div>
           </div>
+          <p className="border-l-[3px] border-primary bg-primary/10 px-4 py-4 text-sm leading-6 text-primary/90">
+            Registered national NGO in Nigeria · Women-led · Youth-led ·
+            Member, Girls Not Brides
+          </p>
         </div>
       </Container>
     </div>

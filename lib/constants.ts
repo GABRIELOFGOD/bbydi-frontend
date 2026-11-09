@@ -577,22 +577,22 @@ export const Governed = [
   {
     id: "1",
     topic: "Board of Trustees",
-    content: "The Board of Trustees is the highest decision-making body of BBYDI, providing strategic direction and oversight. It is composed of distinguished individuals with expertise in governance, development, and youth engagement.",
+    content: "Seven trustees hold legal responsibility for the organisation. They are listed with the rest of our people below. Biographies and declared interests to follow.",
   },
   {
     id: "2",
     topic: "Management team",
-    content: "The Management Team is responsible for the day-to-day operations of BBYDI, implementing the strategic plans set by the Board of Trustees. It consists of experienced professionals in various fields, including program management, finance, and communications.",
+    content: "BBYDI is led by Executive Director Nurah Jimoh-Sanni, with directors for programmes, partnerships, communications and finance, and leads for community engagement and research. Full roster below.",
   },
   {
     id: "3",
     topic: "Registration & legal status",
-    content: "BBYDI is registered as a non-profit organization under the laws of Nigeria. It operates in compliance with all relevant regulations and maintains transparency and accountability in its operations.",
+    content: "CAC registration number and tax status. Content to supply.",
   },
   {
     id: "4",
     topic: "Where we work",
-    content: "BBYDI operates across Nigeria, with a focus on engaging youth and local communities in various states. Our programs are designed to address the unique challenges and opportunities in each region, ensuring that our impact is both meaningful and sustainable.",
+    content: "Head office in Ilorin, Kwara State, with an Abuja office and programme presence across all 36 states. Confirm office addresses.",
   }
 ];
 

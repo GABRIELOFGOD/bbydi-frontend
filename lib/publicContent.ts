@@ -46,7 +46,7 @@ export type PublicStaffProfile = {
   name: string;
   position: string;
   image?: string;
-  category: "leadership" | "staff" | "volunteer";
+  category: "trustee" | "leadership" | "staff" | "volunteer";
   bio?: string;
 };
 

@@ -12,8 +12,8 @@ const WhoWeAre = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div className="flex flex-col gap-2">
           <ColumnTitle text="A civic organisation built around rights, opportunity and accountable governance." />
-          <p className="text-lg text-muted-foreground">
-            BBYDI was officially registered in Nigeria in 2018 and works with young people, women, girls and communities across West and Central Africa. We bring together research, public education, grassroots engagement, policy advocacy and technology to address challenges affecting people’s rights, opportunities and participation. In 2025 we delivered programmes in ten Nigerian states and ran engagements across five countries.
+          <p className="text-lg leading-normal">
+            BBYDI was officially registered in Nigeria in 2018 and works with young people, women, girls and communities across West and Central Africa. We bring together research, public education, grassroots engagement, policy advocacy and technology to address challenges affecting people’s rights, opportunities and participation. In 2025 we delivered programmes in ten Nigerian states, and our engagements spanned five countries — Nigeria, Ghana, Togo, Benin and Cameroon.
           </p>
           <p>
             We empower young people and local communities to drive sustainable development from the grassroots, using data-driven and evidence-based analysis to hold government accountable. We work in coalition — with civil society, media, traditional institutions and government itself — because durable change is never delivered alone.

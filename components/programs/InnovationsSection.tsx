@@ -39,7 +39,7 @@ export default function InnovationsSection() {
           <SectionTitle title="Innovation & Technology for Good" />
           <div className="flex flex-col gap-2">
             <h2 className="text-2xl font-bold leading-tight md:text-3xl">
-              The eleven tools we have built
+              The {items.length} tools we have built
             </h2>
             <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
               Civic technology BBYDI designed, built and runs — not campaigns

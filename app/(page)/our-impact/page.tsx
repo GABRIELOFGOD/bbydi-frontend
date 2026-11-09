@@ -100,6 +100,61 @@ const civilSocietyFigures = [
   { value: "5+", label: "Partnerships or MoUs formalised", source: "Figure supplied by the programmes team" },
 ];
 
+const annualTotals = [
+  {
+    year: "2022",
+    report: "BBYDI 2022 Annual Report",
+    items: [
+      [{ text: "10,000+", bold: true }, { text: " youths directly engaged" }],
+      [{ text: "50+", bold: true }, { text: " communities directly reached" }],
+      [{ text: "11", bold: true }, { text: " states reached" }],
+      [{ text: "15", bold: true }, { text: " projects executed" }],
+      [{ text: "20,000+", bold: true }, { text: " citizens through the voter registration help desk" }],
+      [{ text: "108", bold: true }, { text: " community mobilisers trained" }],
+      [{ text: "54", bold: true }, { text: " radio episodes · " }, { text: "12", bold: true }, { text: " documents published" }],
+    ],
+  },
+  {
+    year: "2023",
+    report: "BBYDI 2023 Annual Report",
+    items: [
+      [{ text: "100,000+", bold: true }, { text: " individuals trained in essential digital skills" }],
+      [{ text: "15,000+", bold: true }, { text: " young Nigerians reached by campaign" }],
+      [{ text: "36", bold: true }, { text: " Youth Focal Points across all 36 states" }],
+      [{ text: "180+", bold: true }, { text: " educators engaged nationwide" }],
+      [{ text: "500+", bold: true }, { text: " students from 35 schools at Teens Speak Out" }],
+      [{ text: "400", bold: true }, { text: " women and girls in menstrual hygiene" }],
+      [{ text: "20", bold: true }, { text: " organisations in a new CSO coalition" }],
+    ],
+  },
+  {
+    year: "2024",
+    report: "BBYDI 2024 Annual Report",
+    items: [
+      [{ text: "1.2M+", bold: true }, { text: " people reached" }],
+      [{ text: "6M+", bold: true }, { text: " radio listeners engaged" }],
+      [{ text: "8,874", bold: true }, { text: " students trained on online safety across 45 schools" }],
+      [{ text: "100+", bold: true }, { text: " traditional rulers mobilised · " }, { text: "33", bold: true }, { text: " public pledges" }],
+      [{ text: "5,000+", bold: true }, { text: " people with clean water in Oke-Alafia" }],
+      [{ text: "150+", bold: true }, { text: " community members sensitised on FGM, Moro LGA" }],
+      [{ text: "35", bold: true }, { text: " teachers trained across six states and the FCT" }],
+    ],
+  },
+  {
+    year: "2025",
+    report: "BBYDI 2025 Annual Report",
+    items: [
+      [{ text: "1M+", bold: true }, { text: " Nigerians reached by YVote Naija" }],
+      [{ text: "5,500+", bold: true }, { text: " students reached across all programmes" }],
+      [{ text: "2,305", bold: true }, { text: " people reached KEMI across 11 countries" }],
+      [{ text: "2,768", bold: true }, { text: " students in climate education" }],
+      [{ text: "400+", bold: true }, { text: " stakeholders at the GBV statewide event" }],
+      [{ text: "247", bold: true }, { text: " male allies inaugurated across five countries" }],
+      [{ text: "182", bold: true }, { text: " AI literacy ambassadors trained" }],
+    ],
+  },
+];
+
 type Metric = {
   value: string;
   label: string;
@@ -274,6 +329,55 @@ export default function OurImpactPage() {
               </p>
             </div>
             <MetricGrid items={civilSocietyFigures} />
+          </Container>
+        </section>
+
+        <section aria-labelledby="annual-totals-heading" className="bg-white">
+          <Container className="flex flex-col gap-7 py-12 md:py-16">
+            <div className="flex flex-col gap-5">
+              <SectionTitle title="Year by year" />
+              <div className="max-w-2xl">
+                <h2 id="annual-totals-heading" className="text-3xl font-bold tracking-tight">
+                  Where the totals come from
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  The headline totals on our homepage are summed across four annual
+                  reports. This is what each one records, so every figure can be
+                  traced to its source.
+                </p>
+                <p className="mt-2 rounded-r-lg border-l-[3px] border-primary bg-muted/60 px-5 py-4 text-sm leading-6 text-foreground/80">
+                  <strong className="text-foreground">A caution on totals. </strong>
+                  Reports from different years count different things, and a person
+                  reached in one year may be counted again in another. These totals
+                  are an indication of scale, not a de-duplicated headcount.
+                </p>
+              </div>
+            </div>
+            <div className="grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+              {annualTotals.map((year) => (
+                <article key={year.year} className="flex flex-col border-t-[3px] border-primary pt-4">
+                  <h3 className="text-2xl font-extrabold tracking-tight">{year.year}</h3>
+                  <ul className="mt-3 flex flex-1 list-disc flex-col gap-1.5 pl-4 text-sm leading-6 text-foreground/75">
+                    {year.items.map((item, index) => (
+                      <li key={`${year.year}-${index}`}>
+                        {item.map((part, partIndex) => (
+                          part.bold ? (
+                            <strong key={partIndex} className="font-bold text-foreground">
+                              {part.text}
+                            </strong>
+                          ) : (
+                            <span key={partIndex}>{part.text}</span>
+                          )
+                        ))}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-5 border-t border-black/10 pt-3 text-xs leading-5 text-muted-foreground">
+                    {year.report}
+                  </p>
+                </article>
+              ))}
+            </div>
           </Container>
         </section>
 

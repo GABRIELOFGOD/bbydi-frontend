@@ -13,7 +13,7 @@ const PageHeader = ({ page, header, description }: PageHeaderType) => {
       <Container className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
         <div className="flex flex-col gap-5">
           <div className="flex gap-1 text-xs text-muted-foreground">
-            <Link href="/">Home</Link>
+            <Link className='hover:underline' href="/">Home</Link>
             <span>/</span>
             <p>{page}</p>
           </div>

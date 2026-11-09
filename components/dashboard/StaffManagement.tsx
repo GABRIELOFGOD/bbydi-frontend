@@ -9,7 +9,7 @@ import { useUser } from "@/providers/userProvider";
 type ProfileForm = {
   name: string;
   position: string;
-  category: "leadership" | "staff" | "volunteer";
+  category: "trustee" | "leadership" | "staff" | "volunteer";
   bio: string;
   accountId: string;
 };
@@ -214,11 +214,11 @@ export default function StaffManagement() {
       <section className="grid gap-6 xl:grid-cols-2">
         <div className="space-y-4">
           <h2 className="font-bold">Public team directory</h2>
-          {loading ? <p className="text-sm text-muted-foreground">Loading team profiles...</p> : (["leadership", "staff", "volunteer"] as const).map((category) => {
+          {loading ? <p className="text-sm text-muted-foreground">Loading team profiles...</p> : (["trustee", "leadership", "staff", "volunteer"] as const).map((category) => {
             const sectionProfiles = profiles.filter((profile) => profile.category === category);
             return (
               <section key={category} className="space-y-2">
-                <h3 className="pt-2 text-sm font-semibold">{category === "leadership" ? "Leadership" : category === "staff" ? "Programmes, research & operations" : "Volunteers"}</h3>
+                <h3 className="pt-2 text-sm font-semibold">{category === "trustee" ? "Board of Trustees" : category === "leadership" ? "Leadership" : category === "staff" ? "Programmes, research & operations" : "Volunteers"}</h3>
                 {sectionProfiles.map((profile, index) => (
                   <article
                     key={profile._id}
@@ -266,6 +266,7 @@ export default function StaffManagement() {
           </label>
           <label className="block space-y-1.5 text-sm font-medium">Directory section
             <select value={profileForm.category} onChange={(event) => setProfileForm((current) => ({ ...current, category: event.target.value as ProfileForm["category"] }))} className="mt-1 block h-10 w-full rounded border px-3">
+              <option value="trustee">Board of Trustees</option>
               <option value="leadership">Leadership</option>
               <option value="staff">Programmes, research & operations</option>
               <option value="volunteer">Volunteers</option>
