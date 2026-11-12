@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,18 +8,13 @@ import AccessibilityWidget from "@/components/accessibility/AccessibilityWidget"
 import WebsiteAssistant from "@/components/assistant/WebsiteAssistant";
 import { publicPageUrl } from "@/lib/publicContent";
 
-const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" });
+const satoshi = localFont({
+  src: "../public/fonts/Satoshi-Variable.ttf",
+  display: "swap",
+  variable: "--font-satoshi",
+  weight: "300 900",
+});
 const siteRoot = publicPageUrl("/");
-
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteRoot),
@@ -56,7 +51,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", dmSans.variable, "font-sans tracking-wide")}
+      className={cn("h-full", "antialiased", satoshi.variable, "font-sans tracking-wide")}
     >
       <body className="min-h-full flex flex-col">
         <script

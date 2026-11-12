@@ -50,7 +50,7 @@
 }
 
 :root {
-  --sans: "DM Sans", "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  --sans: var(--font-satoshi), "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
   --background: oklch(1 0 0);
   --foreground: #1A1A1A;
   --card: oklch(1 0 0);
